@@ -1,0 +1,38 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:8.0.33
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '4306:3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
+  openldap:
+    hostname: openldap
+    domainname: "example.org"
+    image: osixia/openldap:1.5.0
+    container_name: openldap
+    ports:
+      - "389:389"
+    command: [ --copy-service, --loglevel, debug ]
+    environment:
+      LDAP_LOG_LEVEL: "256"
+      LDAP_ORGANISATION: "Example Org."
+      LDAP_DOMAIN: "example.org"
+      LDAP_BASE_DN: "dc=example,dc=org"
+      LDAP_ADMIN_PASSWORD: "admin"
+      LDAP_REMOVE_CONFIG_AFTER_SETUP: "false"
+    volumes:
+      - openldap-data:/container/service/slapd/assets/config/bootstrap/ldif/50-bootstrap.ldif:z
+      - openldap-data:/var/lib/ldap
+      - openldap-data:/etc/ldap/slapd.d
+
+
+volumes:
+  mysql-data:
+  openldap-data:
