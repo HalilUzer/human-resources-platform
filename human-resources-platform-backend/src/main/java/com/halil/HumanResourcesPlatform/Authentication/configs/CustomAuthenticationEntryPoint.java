@@ -1,4 +1,4 @@
-package com.halil.HumanResourcesPlatform.Authentication;
+package com.halil.HumanResourcesPlatform.Authentication.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halil.HumanResourcesPlatform.Authentication.dtos.ErrorDto;

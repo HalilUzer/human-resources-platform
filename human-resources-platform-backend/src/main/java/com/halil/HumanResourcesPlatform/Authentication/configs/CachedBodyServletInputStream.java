@@ -1,4 +1,4 @@
-package com.halil.HumanResourcesPlatform.Authentication;
+package com.halil.HumanResourcesPlatform.Authentication.configs;
 
 
 import jakarta.servlet.ReadListener;

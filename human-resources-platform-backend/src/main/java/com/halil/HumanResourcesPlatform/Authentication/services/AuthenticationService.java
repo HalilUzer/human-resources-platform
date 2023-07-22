@@ -1,4 +1,4 @@
-package com.halil.HumanResourcesPlatform.Authentication;
+package com.halil.HumanResourcesPlatform.Authentication.services;
 
 import com.halil.HumanResourcesPlatform.HumanResourcesSpecialist.entities.HumanResourcesSpecialist;
 import com.halil.HumanResourcesPlatform.HumanResourcesSpecialist.repositories.HumanResourcesRepository;
