@@ -2,6 +2,7 @@
 import ColorfulLogo from '@/components/ColorfulLogo.vue';
 import GoBack from '@/components/GoBack.vue';
 import SignInLinkedinButton from '@/components/SignInLinkedinButton.vue';
+
 </script>
 
 <template>
@@ -13,7 +14,8 @@ import SignInLinkedinButton from '@/components/SignInLinkedinButton.vue';
                 <div id="sign-in-column" class=" justify-content-center col-md-6">
                     <div class="py-3 d-flex align-items-center">
                         <hr class="flex-grow-1" />
-                        <div class="badge" style="background-color: rgb(7, 24, 61);">Human Resources Specialist Sign In</div>
+                        <div class="badge" style="background-color: rgb(7, 24, 61);">Human Resources Specialist Sign In
+                        </div>
                         <hr class="flex-grow-1" />
                     </div>
                     <div id="sign-in-box">
@@ -26,7 +28,7 @@ import SignInLinkedinButton from '@/components/SignInLinkedinButton.vue';
                             <label for="floatingPassword">Password</label>
                             <div class="py-3 d-flex align-items-center">
                                 <hr class="flex-grow-1" />
-                                <div class="badge"  style="background-color: rgb(7, 24, 61);">Candidates Sign In</div>
+                                <div class="badge" style="background-color: rgb(7, 24, 61);">Candidates Sign In</div>
                                 <hr class="flex-grow-1" />
                             </div>
                         </div>
@@ -35,10 +37,10 @@ import SignInLinkedinButton from '@/components/SignInLinkedinButton.vue';
 
 
                 <div class="row justify-content-center">
-                                <div class="col-2">
-                                    <SignInLinkedinButton></SignInLinkedinButton>
-                                </div>
-                            </div>
+                    <div class="col-2">
+                        <SignInLinkedinButton></SignInLinkedinButton>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -48,6 +50,4 @@ import SignInLinkedinButton from '@/components/SignInLinkedinButton.vue';
 
 
 
-<style scoped>
-
-</style>
+<style scoped></style>
