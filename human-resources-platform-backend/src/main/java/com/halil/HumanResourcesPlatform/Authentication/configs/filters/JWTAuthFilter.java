@@ -1,5 +1,6 @@
-package com.halil.HumanResourcesPlatform.Authentication;
+package com.halil.HumanResourcesPlatform.Authentication.configs.filters;
 
+import com.halil.HumanResourcesPlatform.Authentication.services.UserAuthenticationProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,8 +1,10 @@
-package com.halil.HumanResourcesPlatform.Authentication;
+package com.halil.HumanResourcesPlatform.Authentication.configs;
 
+import com.halil.HumanResourcesPlatform.Authentication.configs.filters.JWTAuthFilter;
+import com.halil.HumanResourcesPlatform.Authentication.configs.filters.UsernamePasswordFilter;
+import com.halil.HumanResourcesPlatform.Authentication.services.UserAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;

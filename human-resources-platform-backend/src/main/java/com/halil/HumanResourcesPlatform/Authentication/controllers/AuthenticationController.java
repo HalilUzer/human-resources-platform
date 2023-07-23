@@ -1,6 +1,6 @@
 package com.halil.HumanResourcesPlatform.Authentication.controllers;
 
-import com.halil.HumanResourcesPlatform.Authentication.UserAuthenticationProvider;
+import com.halil.HumanResourcesPlatform.Authentication.services.UserAuthenticationProvider;
 import com.halil.HumanResourcesPlatform.Authentication.dtos.SignInDto;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
