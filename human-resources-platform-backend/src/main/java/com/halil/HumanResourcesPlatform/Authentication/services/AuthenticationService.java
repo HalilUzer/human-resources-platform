@@ -6,10 +6,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationService {
-
-
-
-
     private final HumanResourcesRepository humanResourcesRepository;
 
     public AuthenticationService( HumanResourcesRepository humanResourcesRepository) {

@@ -1,9 +1,10 @@
-package com.halil.HumanResourcesPlatform.Authentication.services;
+package com.halil.HumanResourcesPlatform.Authentication.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.halil.HumanResourcesPlatform.Authentication.services.AuthenticationService;
 import com.halil.HumanResourcesPlatform.HumanResourcesSpecialist.entities.HumanResourcesSpecialist;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;

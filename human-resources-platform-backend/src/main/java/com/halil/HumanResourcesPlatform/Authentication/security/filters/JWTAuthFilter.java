@@ -1,6 +1,8 @@
-package com.halil.HumanResourcesPlatform.Authentication.configs.filters;
+package com.halil.HumanResourcesPlatform.Authentication.security.filters;
 
-import com.halil.HumanResourcesPlatform.Authentication.services.UserAuthenticationProvider;
+import com.halil.HumanResourcesPlatform.Authentication.configs.Path;
+import com.halil.HumanResourcesPlatform.Authentication.configs.PathsConfig;
+import com.halil.HumanResourcesPlatform.Authentication.security.UserAuthenticationProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,12 +14,17 @@ import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
 
-public class JWTAuthFilter extends OncePerRequestFilter {
+public class JWTAuthFilter extends OncePerRequestFilter{
 
     private final UserAuthenticationProvider provider;
 
-    public JWTAuthFilter(UserAuthenticationProvider provider) {
+    private final PathsConfig pathsConfig;
+
+
+
+    public JWTAuthFilter(UserAuthenticationProvider provider, PathsConfig pathsConfig) {
         this.provider = provider;
+        this.pathsConfig = pathsConfig;
     }
 
     @Override
@@ -26,7 +33,9 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (header != null && "/api".equals(request.getServletPath()) && HttpMethod.GET.matches(request.getMethod())) {
+        if (header != null &&
+                pathsConfig.matcher(pathsConfig.candidePaths, request.getServletPath(), request.getMethod()) ||
+        pathsConfig.matcher(pathsConfig.hrSpecialistPaths, request.getServletPath(), request.getMethod())) {
             String[] authElements = header.split(" ");
             if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
                 try {

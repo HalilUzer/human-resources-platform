@@ -1,4 +1,4 @@
-package com.halil.HumanResourcesPlatform.Authentication.configs;
+package com.halil.HumanResourcesPlatform.Authentication.security;
 
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;

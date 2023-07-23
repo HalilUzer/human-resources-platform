@@ -1,8 +1,8 @@
-package com.halil.HumanResourcesPlatform.Authentication.configs.filters;
+package com.halil.HumanResourcesPlatform.Authentication.security.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.halil.HumanResourcesPlatform.Authentication.configs.CachedBodyHttpServletRequest;
-import com.halil.HumanResourcesPlatform.Authentication.services.UserAuthenticationProvider;
+import com.halil.HumanResourcesPlatform.Authentication.security.CachedBodyHttpServletRequest;
+import com.halil.HumanResourcesPlatform.Authentication.security.UserAuthenticationProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
