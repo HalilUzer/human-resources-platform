@@ -1,28 +1,28 @@
 package com.halil.HumanResourcesPlatform.Authentication.services;
 
-import com.halil.HumanResourcesPlatform.HumanResourcesSpecialist.entities.HumanResourcesSpecialist;
-import com.halil.HumanResourcesPlatform.HumanResourcesSpecialist.repositories.HumanResourcesRepository;
+import com.halil.HumanResourcesPlatform.HrSpecialist.entities.HrSpecialist;
+import com.halil.HumanResourcesPlatform.HrSpecialist.repositories.HrSpecialistRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationService {
-    private final HumanResourcesRepository humanResourcesRepository;
+    private final HrSpecialistRepository hrSpecialistRepository;
 
-    public AuthenticationService( HumanResourcesRepository humanResourcesRepository) {
-        this.humanResourcesRepository = humanResourcesRepository;
+    public AuthenticationService( HrSpecialistRepository hrSpecialistRepository) {
+        this.hrSpecialistRepository = hrSpecialistRepository;
     }
 
-    public HumanResourcesSpecialist validateCredentials(HumanResourcesSpecialist humanResourcesSpecialist) throws RuntimeException {
-        if (this.humanResourcesRepository.validateCredentials(humanResourcesSpecialist)) {
-            return humanResourcesSpecialist;
+    public HrSpecialist validateCredentials(HrSpecialist hrSpecialist) throws RuntimeException {
+        if (this.hrSpecialistRepository.validateCredentials(hrSpecialist)) {
+            return hrSpecialist;
         }
         throw new RuntimeException("Invalid Password");
     }
 
-    public HumanResourcesSpecialist findByUsername(String username) throws RuntimeException {
-        HumanResourcesSpecialist humanResourcesSpecialist = this.humanResourcesRepository.findByUsername(username);
-        if (humanResourcesSpecialist != null) {
-            return humanResourcesSpecialist;
+    public HrSpecialist findByUsername(String username) throws RuntimeException {
+        HrSpecialist hrSpecialist = this.hrSpecialistRepository.findByUsername(username);
+        if (hrSpecialist != null) {
+            return hrSpecialist;
         }
         throw new RuntimeException("Invalid Username");
     }

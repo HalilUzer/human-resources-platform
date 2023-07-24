@@ -1,6 +1,9 @@
 package com.halil.HumanResourcesPlatform.Authentication.controllers;
 
-import com.halil.HumanResourcesPlatform.Authentication.security.UserAuthenticationProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.halil.HumanResourcesPlatform.Authentication.configs.Roles;
+import com.halil.HumanResourcesPlatform.Authentication.dtos.LinkedinSignInDto;
+import com.halil.HumanResourcesPlatform.Authentication.security.AuthenticationProvider;
 import com.halil.HumanResourcesPlatform.Authentication.dtos.SignInDto;
 import com.halil.HumanResourcesPlatform.Authentication.services.LinkedinOauthService;
 import jakarta.validation.Valid;
@@ -10,22 +13,25 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class AuthenticationController {
 
-    UserAuthenticationProvider userAuthenticationProvider;
+    AuthenticationProvider authenticationProvider;
 
     LinkedinOauthService linkedinOauthService;
 
+    ObjectMapper OBJECT_MAPPER;
 
 
 
-    AuthenticationController(UserAuthenticationProvider userAuthenticationProvider,
-                             LinkedinOauthService linkedinOauthService){
-        this.userAuthenticationProvider = userAuthenticationProvider;
+    AuthenticationController(AuthenticationProvider authenticationProvider,
+                             LinkedinOauthService linkedinOauthService,
+                             ObjectMapper OBJECT_MAPPER){
+        this.authenticationProvider = authenticationProvider;
         this.linkedinOauthService = linkedinOauthService;
+        this.OBJECT_MAPPER = OBJECT_MAPPER;
     }
 
     @PostMapping("/sign-in")
     public String signIn(@Valid @RequestBody SignInDto signInDto){
-        return userAuthenticationProvider.createToken(signInDto.username());
+        return authenticationProvider.createToken(signInDto.username(), Roles.HR_SPECIALIST.toString());
     }
 
     @GetMapping("/api")
@@ -33,10 +39,9 @@ public class AuthenticationController {
         return "Success";
     }
 
-    @PostMapping("/linkedin/access_token")
-    public String getLinkedinAccessToken(){
-        linkedinOauthService.getAccessTokenFromLinkedinServer();
+    @PostMapping("/linkedin/sign-in")
+    public String linkedinSignIn(@Valid @RequestBody LinkedinSignInDto linkedinSignInDto){
+        String accessToken = linkedinOauthService.getAccessTokenFromLinkedin(linkedinSignInDto.code());
 return null;
-
     }
 }

@@ -1,7 +1,7 @@
-package com.halil.HumanResourcesPlatform.HumanResourcesSpecialist.repositories;
+package com.halil.HumanResourcesPlatform.HrSpecialist.repositories;
 
 import com.halil.HumanResourcesPlatform.Authentication.services.AuthenticationService;
-import com.halil.HumanResourcesPlatform.HumanResourcesSpecialist.entities.HumanResourcesSpecialist;
+import com.halil.HumanResourcesPlatform.HrSpecialist.entities.HrSpecialist;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,25 +16,25 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
-public class HumanResourcesRepository {
+public class HrSpecialistRepository {
     LdapTemplate template;
     LdapContextSource context;
 
     private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
-    public HumanResourcesRepository(LdapTemplate template, LdapContextSource context){
+    public HrSpecialistRepository(LdapTemplate template, LdapContextSource context){
         this.template = template;
         this.context = context;
     }
 
-    public boolean validateCredentials(HumanResourcesSpecialist humanResourcesSpecialist){
-        List<byte[]> result = template.search("","uid=" + humanResourcesSpecialist.username, (AttributesMapper<byte[]>) attrs -> (byte[]) attrs.get("userPassword").get());
+    public boolean validateCredentials(HrSpecialist hrSpecialist){
+        List<byte[]> result = template.search("","uid=" + hrSpecialist.username, (AttributesMapper<byte[]>) attrs -> (byte[]) attrs.get("userPassword").get());
 
         if(result.size() == 0){
             return false;
         }
         String password = new String(result.get(0), StandardCharsets.UTF_8);
-        if(!password.equals(humanResourcesSpecialist.password)){
+        if(!password.equals(hrSpecialist.password)){
             return false;
         }
         return true;
@@ -66,14 +66,14 @@ public class HumanResourcesRepository {
         template.bind(context);
     }
 
-    public HumanResourcesSpecialist findByUsername(String username){
+    public HrSpecialist findByUsername(String username){
         List<byte[]> result = template.<byte[]>search("", "uid=" + username, (AttributesMapper<byte[]>) attrs -> (byte[]) attrs.get("userPassword").get());
         String password = new String(result.get(0), StandardCharsets.UTF_8);
         if(result.size() == 0){
             return null;
         }
         else{
-            return new HumanResourcesSpecialist(null, null, username, password);
+            return new HrSpecialist(null, null, username, password);
         }
     }
 

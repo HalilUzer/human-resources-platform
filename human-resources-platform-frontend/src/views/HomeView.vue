@@ -12,7 +12,6 @@ if(route.query.code === undefined){
     grant_type: 'authorization_code',
     code: route.query.code,
     client_id: linkedinSigninConstants.clientId,
-    
   })
 
 }

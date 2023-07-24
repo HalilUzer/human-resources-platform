@@ -2,8 +2,10 @@ package com.halil.HumanResourcesPlatform.Authentication.dtos;
 
 import jakarta.validation.constraints.NotEmpty;
 
-public record ErrorDto(
+public record LinkedinSignInDto(
         @NotEmpty
-        String message
-) {
+        String code,
+        @NotEmpty
+        String status) {
 }
+
