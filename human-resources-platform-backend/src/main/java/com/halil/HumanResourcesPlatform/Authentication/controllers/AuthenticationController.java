@@ -7,6 +7,7 @@ import com.halil.HumanResourcesPlatform.Authentication.security.AuthenticationPr
 import com.halil.HumanResourcesPlatform.Authentication.dtos.SignInDto;
 import com.halil.HumanResourcesPlatform.Authentication.services.LinkedinOauthService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -40,8 +41,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/linkedin/sign-in")
-    public String linkedinSignIn(@Valid @RequestBody LinkedinSignInDto linkedinSignInDto){
+    @ResponseStatus(HttpStatus.CREATED)
+    public void linkedinSignIn(@Valid @RequestBody LinkedinSignInDto linkedinSignInDto){
         String accessToken = linkedinOauthService.getAccessTokenFromLinkedin(linkedinSignInDto.code());
-return null;
+        linkedinOauthService.createProfileFromLinkedin(accessToken);
     }
 }

@@ -3,6 +3,7 @@ package com.halil.HumanResourcesPlatform.Authentication.security.filters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halil.HumanResourcesPlatform.Authentication.security.CachedBodyHttpServletRequest;
 import com.halil.HumanResourcesPlatform.Authentication.security.AuthenticationProvider;
+import com.halil.HumanResourcesPlatform.HrSpecialist.repositories.LdapHrSpecialist;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +32,7 @@ public class UsernamePasswordFilter extends OncePerRequestFilter {
         CachedBodyHttpServletRequest cachedBodyHttpServletRequest =
                 new CachedBodyHttpServletRequest(request);
         if ("/sign-in".equals(request.getServletPath()) && HttpMethod.POST.matches(request.getMethod())) {
-            HrSpecialist hrSpecialist = OBJECT_MAPPER.readValue(cachedBodyHttpServletRequest.getInputStream(), HrSpecialist.class);
+            LdapHrSpecialist hrSpecialist = OBJECT_MAPPER.readValue(cachedBodyHttpServletRequest.getInputStream(), LdapHrSpecialist.class);
             try {
                 SecurityContextHolder.getContext().setAuthentication(
                         provider.validateCredentials(hrSpecialist)

@@ -9,6 +9,8 @@ import com.halil.HumanResourcesPlatform.Authentication.configs.PathsConfig;
 import com.halil.HumanResourcesPlatform.Authentication.configs.Roles;
 import com.halil.HumanResourcesPlatform.Authentication.services.AuthenticationService;
 import com.halil.HumanResourcesPlatform.HrSpecialist.entities.HrSpecialist;
+import com.halil.HumanResourcesPlatform.HrSpecialist.repositories.LdapHrSpecialist;
+import com.halil.HumanResourcesPlatform.LdapFiller;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,12 +66,12 @@ public class AuthenticationProvider {
         logger.info(decoded.getPayload());
         String role = decoded.getClaim("role").asString();
         pathsConfig.pathAndRoleMatcher(Roles.valueOf(role), servletPath);
-        HrSpecialist hrSpecialist = authenticationService.findByUsername(decoded.getIssuer());
+        LdapHrSpecialist hrSpecialist = authenticationService.findByUsername(decoded.getIssuer());
         return new UsernamePasswordAuthenticationToken(hrSpecialist, null, Collections.emptyList());
     }
 
-    public UsernamePasswordAuthenticationToken validateCredentials(HrSpecialist hrSpecialist) {
-        HrSpecialist hrSpecialistAuth = authenticationService.validateCredentials(hrSpecialist);
+    public UsernamePasswordAuthenticationToken validateCredentials(LdapHrSpecialist hrSpecialist) {
+        LdapHrSpecialist hrSpecialistAuth = authenticationService.validateCredentials(hrSpecialist);
         return new UsernamePasswordAuthenticationToken(hrSpecialistAuth, null, Collections.emptyList());
     }
 

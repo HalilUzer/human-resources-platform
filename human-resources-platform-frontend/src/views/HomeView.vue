@@ -4,17 +4,22 @@ import NavBar from '@/components/NavBar.vue';
 import { useRoute } from 'vue-router'
 import axios from 'axios';
 import { linkedinSigninConstants } from '@/constants';
+import { onMounted } from 'vue'
 
 const route = useRoute();
 
-if(route.query.code === undefined){
-  axios.post('https://www.linkedin.com/oauth/v2/accessToken', {
-    grant_type: 'authorization_code',
-    code: route.query.code,
-    client_id: linkedinSigninConstants.clientId,
-  })
 
-}
+
+onMounted(async () => {
+  if (route.query.code !== undefined) {
+    const response = await axios.post('http://localhost:8080/linkedin/sign-in', {
+      state: 'foobar',
+      code: route.query.code,
+    })
+
+    console.log(response)
+  }
+})
 </script>
 
 <template>
