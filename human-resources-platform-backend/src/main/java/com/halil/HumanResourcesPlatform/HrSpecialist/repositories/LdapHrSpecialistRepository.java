@@ -14,17 +14,20 @@ import org.springframework.stereotype.Service;
 import javax.naming.Name;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class LdapHrSpecialistRepository {
-    LdapTemplate template;
-    LdapContextSource context;
+    private final LdapTemplate template;
+    private final LdapContextSource context;
+    private final HrSpecialistRepository hrSpecialistRepository;
 
     private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
-    public LdapHrSpecialistRepository(LdapTemplate template, LdapContextSource context){
+    public LdapHrSpecialistRepository(LdapTemplate template, LdapContextSource context, HrSpecialistRepository hrSpecialistRepository){
         this.template = template;
         this.context = context;
+        this.hrSpecialistRepository = hrSpecialistRepository;
     }
 
     public boolean validateCredentials(LdapHrSpecialist hrSpecialist){
@@ -64,6 +67,13 @@ public class LdapHrSpecialistRepository {
         context.getAttributes();
 
         template.bind(context);
+
+        HrSpecialist hrSpecialist = new HrSpecialist();
+        hrSpecialist.setId(UUID.randomUUID());
+        hrSpecialist.setUsername(username);
+        hrSpecialistRepository.save(hrSpecialist);
+
+
     }
 
     public LdapHrSpecialist findByUsername(String username){

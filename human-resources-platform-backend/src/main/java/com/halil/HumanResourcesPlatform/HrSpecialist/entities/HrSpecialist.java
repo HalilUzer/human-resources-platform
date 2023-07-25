@@ -2,67 +2,38 @@ package com.halil.HumanResourcesPlatform.HrSpecialist.entities;
 
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
 public class HrSpecialist {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private String linkedinId;
-    private String name;
-    private String surname;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    private String headline;
+    @Column(unique = true)
+    private String username;
 
-
-
-    public HrSpecialist(int id, String linkedinId, String name, String surname, String headline) {
+    public HrSpecialist(UUID id, String username) {
         this.id = id;
-        this.linkedinId = linkedinId;
-        this.name = name;
-        this.surname = surname;
-        this.headline = headline;
+        this.username = username;
     }
 
     public HrSpecialist(){}
 
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getLinkedinId() {
-        return linkedinId;
+    public String getUsername() {
+        return username;
     }
 
-    public String getHeadline() {
-        return headline;
-    }
-
-    public void setHeadline(String headline) {
-        this.headline = headline;
-    }
-
-    public void setLinkedinId(String linkedinId) {
-        this.linkedinId = linkedinId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

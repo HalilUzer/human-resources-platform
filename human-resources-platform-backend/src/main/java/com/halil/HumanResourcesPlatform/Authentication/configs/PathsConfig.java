@@ -14,7 +14,7 @@ public class PathsConfig {
     public final List<Path> publicPaths = List.of(new Path("/", HttpMethod.GET), new Path("/sign-in", HttpMethod.GET));
 
 
-    public boolean pathAndRoleMatcher(Roles role, String givenPath) throws RuntimeException{
+    public boolean pathAndRoleMatcher(Roles role, String givenPath){
 
         if (role.equals(Roles.CANDIDATE)) {
             for (Path path : candidatePaths) {
@@ -22,7 +22,7 @@ public class PathsConfig {
                     return true;
                 }
             }
-            throw new RuntimeException();
+            return  false;
         }
         if (role.equals(Roles.HR_SPECIALIST)) {
             for (Path path : hrSpecialistPaths) {
@@ -30,9 +30,9 @@ public class PathsConfig {
                     return true;
                 }
             }
-            throw  new RuntimeException();
+            return false;
         }
-        throw new RuntimeException();
+        return false;
     }
 
 
