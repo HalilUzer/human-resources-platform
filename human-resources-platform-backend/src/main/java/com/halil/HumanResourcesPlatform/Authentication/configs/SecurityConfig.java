@@ -61,7 +61,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         (requests) ->
-                                requests.requestMatchers("/sign-in", "/linkedin/sign-in").permitAll()
+                                requests.requestMatchers("/sign-in", "/linkedin/sign-in", "/login-linkedin").permitAll()
                                         .requestMatchers("/api").authenticated()
                                         .anyRequest().denyAll()
                 );
