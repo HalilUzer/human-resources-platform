@@ -14,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.halil.HumanResourcesPlatform.HrSpecialist.entities.HrSpecialist;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class UsernamePasswordFilter extends OncePerRequestFilter {
 
@@ -31,6 +32,7 @@ public class UsernamePasswordFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws ServletException, IOException {
         CachedBodyHttpServletRequest cachedBodyHttpServletRequest =
                 new CachedBodyHttpServletRequest(request);
+
         if ("/sign-in".equals(request.getServletPath()) && HttpMethod.POST.matches(request.getMethod())) {
             LdapHrSpecialist hrSpecialist = OBJECT_MAPPER.readValue(cachedBodyHttpServletRequest.getInputStream(), LdapHrSpecialist.class);
             try {

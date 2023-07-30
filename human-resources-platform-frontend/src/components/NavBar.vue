@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import useProfileStore from '@/stores/profileStore';
 import WhiteLogo from './WhiteLogo.vue';
+
+const profileStore = useProfileStore();
 
 </script>
 
@@ -21,8 +24,17 @@ import WhiteLogo from './WhiteLogo.vue';
 
                 <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <RouterLink to="/sign-in" class="nav-link text-white" role="button"><b>Sign In</b></RouterLink>
+                        <RouterLink to="/sign-in" class="nav-link text-white" role="button" v-if="!profileStore.isAuthenticated"><b>Sign In</b></RouterLink>
                     </li>
+                    <li class="nav-fill">
+                        <RouterLink to="/profile" class="nav-link text-white" role="button"
+                            v-if="profileStore.isAuthenticated">Profile</RouterLink>
+                    </li>
+                    <li class="nav-fill">
+                        <a href="" class="nav-link text-white" role="button" v-if="profileStore.isAuthenticated"
+                            @click="profileStore.$reset">Sign Out</a>
+                    </li>
+
                 </ul>
             </div>
         </div>

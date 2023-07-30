@@ -7,9 +7,6 @@ import { onMounted } from 'vue'
 import JobCardGroup from '@/components/JobCardGroup.vue';
 import Pagination from '@/components/Pagination.vue';
 
-
-
-
 const route = useRoute();
 const jobs = [
   {
@@ -48,8 +45,6 @@ const jobs = [
 
 
 onMounted(async () => {
-
-
   if (route.query.code !== undefined) {
     const response = await axios.post('http://localhost:8080/linkedin/sign-in', {
       state: 'foobar',

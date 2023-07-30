@@ -1,16 +1,29 @@
 import 'bootstrap/dist/css/bootstrap.css'
 
-import { createApp } from 'vue'
+import { createApp, watch } from 'vue'
 import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
 
-const app = createApp(App)
+const pinia = createPinia();
 
-app.use(createPinia())
-app.use(router)
+if(localStorage.getItem("state")){
+    pinia.state.value = JSON.parse(localStorage.getItem("state")!);
+}
 
-app.mount('#app')
+watch(
+    pinia.state,
+    (state) => {
+        localStorage.setItem("state", JSON.stringify(state))
+    }
+)
+
+const app = createApp(App);
+
+app.use(pinia);
+app.use(router);
+
+app.mount('#app');
 
 import 'bootstrap/dist/js/bootstrap.js'

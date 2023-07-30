@@ -3,33 +3,34 @@ package com.halil.HumanResourcesPlatform.Candidates.entites;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "candidates")
 public class Candidate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID candidateId;
 
     @Column(unique = true)
     private String linkedinId;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Experience> experiences = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Education> educations = new ArrayList<>();
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String about;
     private String name;
     private String surname;
-
     private String headline;
+    private String profileUrl;
 
 
 
-    public Candidate(UUID id, String linkedinId, String name, String surname, String headline) {
-        this.id = id;
-        this.linkedinId = linkedinId;
-        this.name = name;
-        this.surname = surname;
-        this.headline = headline;
-    }
-
-    public Candidate(){}
+    public Candidate() {}
 
     public String getSurname() {
         return surname;
@@ -47,27 +48,69 @@ public class Candidate {
         this.name = name;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getCandidateId() {
+        return candidateId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setCandidateId(UUID id) {
+        this.candidateId = id;
     }
 
     public String getLinkedinId() {
         return linkedinId;
     }
 
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    public void setLinkedinId(String linkedinId) {
+        this.linkedinId = linkedinId;
+    }
+
+    public List<Experience> getExperiences() {
+        return experiences;
+    }
+
+    public void setExperiences(List<Experience> experiences) {
+        this.experiences = experiences;
+    }
+
     public String getHeadline() {
         return headline;
+    }
+
+    public void pushExperience(Experience experience) {
+        this.experiences.add(experience);
+    }
+
+    public void pushEducation(Education education) {
+        this.educations.add(education);
     }
 
     public void setHeadline(String headline) {
         this.headline = headline;
     }
 
-    public void setLinkedinId(String linkedinId) {
-        this.linkedinId = linkedinId;
+    public List<Education> getEducations() {
+        return educations;
     }
+
+    public void setEducations(List<Education> educations) {
+        this.educations = educations;
+    }
+
+    public String getProfileUrl() {
+        return profileUrl;
+    }
+
+    public void setProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
+
 }

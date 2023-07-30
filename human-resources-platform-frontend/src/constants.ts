@@ -6,7 +6,7 @@ export const themeBackgroundRgb = {
 
 export const linkedinSigninConstants = {
 clientId: '77dvtoezzy0w2f',
-redirectUri: 'http://localhost:5173/',
+redirectUri: 'http://localhost:5173/sign-in/linkedin-profile-url',
 responseType: 'code',
 state: 'foobar'
 }

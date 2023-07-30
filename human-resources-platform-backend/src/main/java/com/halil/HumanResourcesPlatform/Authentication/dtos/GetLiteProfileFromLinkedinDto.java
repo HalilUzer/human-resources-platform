@@ -5,13 +5,8 @@ import jakarta.validation.constraints.NotEmpty;
 public record GetLiteProfileFromLinkedinDto(
         @NotEmpty
         String localizedFirstName,
-
         @NotEmpty
         String localizedLastName,
-        @NotEmpty
-        String localizedHeadline,
-        @NotEmpty
-        String vanityName,
         @NotEmpty
         String id
 ) {
@@ -19,6 +14,6 @@ public record GetLiteProfileFromLinkedinDto(
 
 record ProfilePicture(
         @NotEmpty
-        String displaImage
+        String displayImage
 ) {
 }

@@ -6,6 +6,7 @@ public record LinkedinSignInDto(
         @NotEmpty
         String code,
         @NotEmpty
-        String status) {
+        String profile_url,
+        String state) {
 }
 

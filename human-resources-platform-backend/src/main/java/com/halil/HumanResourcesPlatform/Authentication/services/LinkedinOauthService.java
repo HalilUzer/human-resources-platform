@@ -6,8 +6,6 @@ import com.halil.HumanResourcesPlatform.Authentication.dtos.GetAccessTokenLinked
 import com.halil.HumanResourcesPlatform.Authentication.dtos.GetLiteProfileFromLinkedinDto;
 import com.halil.HumanResourcesPlatform.Candidates.entites.Candidate;
 import com.halil.HumanResourcesPlatform.Candidates.repositories.CandidateRepository;
-import com.halil.HumanResourcesPlatform.HrSpecialist.entities.HrSpecialist;
-import com.halil.HumanResourcesPlatform.HrSpecialist.repositories.HrSpecialistRepository;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,17 +23,17 @@ public class LinkedinOauthService {
 
     private final LinkedinOauthConfigProperties oauthConfigProperties;
 
-    private final HrSpecialistRepository hrSpecialistRepository;
+    private final SeleniumService seleniumService;
 
     private final CandidateRepository candidateRepository;
 
     private final Logger logger = LoggerFactory.getLogger(LinkedinOauthService.class);
 
     public LinkedinOauthService(LinkedinOauthConfigProperties oauthConfigProperties,
-                                HrSpecialistRepository hrSpecialistRepository,
+                                SeleniumService seleniumService,
                                 CandidateRepository candidateRepository) {
         this.oauthConfigProperties = oauthConfigProperties;
-        this.hrSpecialistRepository = hrSpecialistRepository;
+        this.seleniumService = seleniumService;
         this.candidateRepository = candidateRepository;
     }
 
@@ -47,11 +45,12 @@ public class LinkedinOauthService {
                 .post()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(BodyInserters.fromFormData("grant_type", "authorization_code").
-                        with("code", code)
+                .body(BodyInserters.fromFormData("grant_type", "authorization_code")
+                        .with("code", code)
                         .with("client_id", oauthConfigProperties.clientId())
                         .with("client_secret", oauthConfigProperties.clientSecret())
-                        .with("redirect_uri", oauthConfigProperties.redirectUri()))
+                        .with("redirect_uri", oauthConfigProperties.redirectUri())
+                        .with("scope", "r_liteprofile"))
                 .retrieve()
                 .bodyToMono(GetAccessTokenLinkedinResponeDto.class)
                 .block();
@@ -59,7 +58,7 @@ public class LinkedinOauthService {
         return getLinkedinAccessTokenDto.access_token();
     }
 
-    public UUID createProfileFromLinkedin(String accessToken) {
+    public Candidate createCandidateFromLinkedinOauth(String accessToken) {
         WebClient.Builder webClient = WebClient.builder();
         String url = "https://api.linkedin.com/v2/me";
 
@@ -72,16 +71,10 @@ public class LinkedinOauthService {
                 .block();
 
         Candidate candidate = new Candidate();
-        candidate.setId(UUID.randomUUID());
+        candidate.setCandidateId(UUID.randomUUID());
         candidate.setLinkedinId(getLiteProfileFromLinkedinDto.id());
         candidate.setName(getLiteProfileFromLinkedinDto.localizedFirstName());
         candidate.setSurname(getLiteProfileFromLinkedinDto.localizedLastName());
-        candidate.setHeadline(getLiteProfileFromLinkedinDto.localizedHeadline());
-        try{
-            candidateRepository.save(candidate);
-        }
-        catch (Exception e){}
-
-        return  candidate.getId();
+        return candidate;
     }
 }
