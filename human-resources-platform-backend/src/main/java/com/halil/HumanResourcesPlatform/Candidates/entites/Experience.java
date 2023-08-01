@@ -1,5 +1,6 @@
 package com.halil.HumanResourcesPlatform.Candidates.entites;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -9,9 +10,11 @@ public class Experience {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @JsonIgnore
     UUID experienceId;
     @ManyToOne
-    @JoinColumn(name = "candidateId")
+    @JoinColumn(name = "candidate_id")
+    @JsonIgnore
     Candidate candidate;
     String title;
     String date;

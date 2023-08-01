@@ -8,25 +8,25 @@ import java.util.UUID;
 public class HrSpecialist {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue
+    private UUID hrSpecialistId;
 
     @Column(unique = true)
     private String username;
 
-    public HrSpecialist(UUID id, String username) {
-        this.id = id;
+    public HrSpecialist(UUID hrSpecialistId, String username) {
+        this.hrSpecialistId = hrSpecialistId;
         this.username = username;
     }
 
     public HrSpecialist(){}
 
-    public UUID getId() {
-        return id;
+    public UUID getHrSpecialistId() {
+        return hrSpecialistId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setHrSpecialistId(UUID id) {
+        this.hrSpecialistId = id;
     }
 
     public String getUsername() {

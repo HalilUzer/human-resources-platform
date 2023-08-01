@@ -29,10 +29,6 @@ public class SecurityConfig {
 
     private final PathsConfig pathsConfig;
 
-
-
-
-
     public SecurityConfig(CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
                           AuthenticationProvider authenticationProvider,
                           PathsConfig pathsConfig) {
@@ -61,11 +57,8 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         (requests) ->
-                                requests.requestMatchers("/sign-in", "/linkedin/sign-in", "/login-linkedin").permitAll()
-                                        .requestMatchers("/api").authenticated()
-                                        .anyRequest().denyAll()
+                                requests.anyRequest().permitAll()
                 );
-
 
         return httpSecurity.build();
     }

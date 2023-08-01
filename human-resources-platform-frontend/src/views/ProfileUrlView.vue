@@ -1,28 +1,28 @@
 <script setup lang="ts">
 
 import ColorfulLogo from '@/components/ColorfulLogo.vue';
-import { routerKey, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 import axios from 'axios';
 import { onMounted } from 'vue'
 import router from '@/router';
+import useProfileStore from '@/stores/profileStore'
+
 
 const route = useRoute();
+const profileStore = useProfileStore();
 let profileUrl: string = '';
 
 
 async function createProfile() {
     if (route.query.code !== undefined) {
         try {
-            const response = await axios.post('http://localhost:8080/linkedin/sign-in', {
-                state: 'foobar',
-                code: route.query.code,
-                profile_url: profileUrl
-            })
+            console.log(profileStore.getUserId)
+                const response = await axios.post('http://localhost:8080/linkedin/build', {
+                    candidate_id: profileStore.getUserId,
+                    profile_url: profileUrl
+                })
 
-            
-        if(response.status === 200){
-            await router.push('/')
-        }
+            await router.push('/');
         }
         catch (e) {
             console.log(e);
@@ -36,6 +36,20 @@ onMounted(async () => {
     if (route.query.code === null) {
         await router.push('/unauthorized')
     }
+
+    const signInResponse = await axios.post('http://localhost:8080/linkedin/sign-in', {
+        state: 'foobar',
+        code: route.query.code,
+        profile_url: profileUrl
+    })
+
+    profileStore.setJwt(signInResponse.data.token);
+    profileStore.setRole(signInResponse.data.role);
+    profileStore.setUserId(signInResponse.data.candidate_id);
+    if (signInResponse.data.message === 'Exists') {
+        await router.push('/');
+    }
+
 })
 </script>
 
@@ -59,7 +73,6 @@ onMounted(async () => {
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-2">
-                        <SignInLinkedinButton></SignInLinkedinButton>
                     </div>
                 </div>
             </div>

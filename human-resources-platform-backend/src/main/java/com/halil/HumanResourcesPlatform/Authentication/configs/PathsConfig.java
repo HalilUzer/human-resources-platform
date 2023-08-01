@@ -3,6 +3,7 @@ package com.halil.HumanResourcesPlatform.Authentication.configs;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -10,9 +11,16 @@ import java.util.List;
 public class PathsConfig {
 
     public final List<Path> hrSpecialistPaths = List.of();
-    public final List<Path> candidatePaths = List.of(new Path("/linkedin/access-token", HttpMethod.GET));
-    public final List<Path> publicPaths = List.of(new Path("/", HttpMethod.GET), new Path("/sign-in", HttpMethod.GET));
+    public final List<Path> candidatePaths = List.of(new Path("/linkedin/access-token", HttpMethod.GET), new Path("/linkedin/build", HttpMethod.POST));
 
+
+    public static List<String> getAllPublicPaths(List<Path> paths){
+        List<String> paths2 = new ArrayList<String>();
+        for(Path path : paths){
+            paths2.add(path.path());
+        }
+        return paths2;
+    }
 
     public boolean pathAndRoleMatcher(Roles role, String givenPath){
 

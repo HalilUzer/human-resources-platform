@@ -3,6 +3,8 @@ import HomeView from '@/views/HomeView.vue'
 import SignInView from '@/views/SignInView.vue'
 import ProfileUrlView from '@/views/ProfileUrlView.vue'
 import UnauthorizedView from '@/views/UnauthorizedView.vue'
+import NotFoundView from '@/views/NotFoundView.vue';
+import ProfileView from '@/views/ProfileView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,7 +29,19 @@ const router = createRouter({
       path:'/unauthorized',
       name:'unauthorized',
       component: UnauthorizedView
+    },
+
+    {
+      path: '/404',
+      name: "404",
+      component: NotFoundView
+    },
+    {
+      path: '/profile/:candidateId',
+      name: 'profile',
+      component: ProfileView
     }
+
   ]
 })
 

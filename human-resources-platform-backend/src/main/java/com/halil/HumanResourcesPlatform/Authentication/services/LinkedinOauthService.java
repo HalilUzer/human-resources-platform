@@ -71,7 +71,7 @@ public class LinkedinOauthService {
                 .block();
 
         Candidate candidate = new Candidate();
-        candidate.setCandidateId(UUID.randomUUID());
+
         candidate.setLinkedinId(getLiteProfileFromLinkedinDto.id());
         candidate.setName(getLiteProfileFromLinkedinDto.localizedFirstName());
         candidate.setSurname(getLiteProfileFromLinkedinDto.localizedLastName());

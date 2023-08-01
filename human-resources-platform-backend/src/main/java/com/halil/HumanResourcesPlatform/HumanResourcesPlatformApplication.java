@@ -8,9 +8,6 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @SpringBootApplication
 @ConfigurationPropertiesScan
 public class HumanResourcesPlatformApplication {
-
-
-
 	public static void main(String[] args) {
 		SpringApplication.run(HumanResourcesPlatformApplication.class, args);
 	}

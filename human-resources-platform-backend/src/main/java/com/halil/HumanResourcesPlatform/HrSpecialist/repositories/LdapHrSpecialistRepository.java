@@ -69,7 +69,7 @@ public class LdapHrSpecialistRepository {
         template.bind(context);
 
         HrSpecialist hrSpecialist = new HrSpecialist();
-        hrSpecialist.setId(UUID.randomUUID());
+        hrSpecialist.setHrSpecialistId(UUID.randomUUID());
         hrSpecialist.setUsername(username);
         hrSpecialistRepository.save(hrSpecialist);
 

@@ -1,12 +1,14 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import jwtDecode from 'jwt-decode'
+import router from '@/router';
 
 
 const useProfileStore = defineStore('profile', () => {
 
   const jwt = ref('');
   const role = ref('');
+  const userId = ref('');
   const isAuthenticated = computed(() => {
     if (jwt.value === '') {
       return false;
@@ -16,9 +18,10 @@ const useProfileStore = defineStore('profile', () => {
     }
   })
 
-  const getJwt = computed(() => {
+  const getJwt = computed( async () => {
     if (checkExpiration()) {
       $reset()
+      await router.push('/');
       return ''
     }
     else {
@@ -32,7 +35,13 @@ const useProfileStore = defineStore('profile', () => {
     role.value = '';
   }
 
-  const getRole = computed(() => role.value)
+  const getUserId = computed(() => userId.value);
+
+  function setUserId(value :string){
+    userId.value = value;
+  }
+
+  const getRole = computed(() => role.value);
 
 
   function setJwt(value: string) {
@@ -42,8 +51,6 @@ const useProfileStore = defineStore('profile', () => {
   function setRole(value: string) {
     role.value = value;
   }
-
-
 
   function checkExpiration(): boolean {
     const decoded: any = jwtDecode(jwt.value);
@@ -55,9 +62,7 @@ const useProfileStore = defineStore('profile', () => {
     }
   }
 
-
-
-  return { getJwt, setJwt, getRole, setRole, $reset, checkExpiration, isAuthenticated }
+  return { getJwt, setJwt, getRole, setRole, $reset, checkExpiration, isAuthenticated, getUserId, setUserId }
 })
 
 

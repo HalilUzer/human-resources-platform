@@ -1,7 +1,9 @@
 package com.halil.HumanResourcesPlatform.Candidates.entites;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +13,16 @@ import java.util.UUID;
 public class Candidate {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue
     private UUID candidateId;
 
     @Column(unique = true)
     private String linkedinId;
     @OneToMany(cascade = CascadeType.ALL)
+
     private List<Experience> experiences = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL)
+
     private List<Education> educations = new ArrayList<>();
 
     @Column(columnDefinition = "LONGTEXT")
