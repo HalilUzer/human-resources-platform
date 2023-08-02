@@ -1,9 +1,9 @@
 package com.halil.HumanResourcesPlatform.Authentication.services;
 
-import com.halil.HumanResourcesPlatform.Candidates.entites.Candidate;
-import com.halil.HumanResourcesPlatform.Candidates.entites.Education;
-import com.halil.HumanResourcesPlatform.Candidates.entites.Experience;
-import com.halil.HumanResourcesPlatform.Candidates.repositories.CandidateRepository;
+import com.halil.HumanResourcesPlatform.Candidate.entites.Candidate;
+import com.halil.HumanResourcesPlatform.Candidate.entites.Education;
+import com.halil.HumanResourcesPlatform.Candidate.entites.Experience;
+import com.halil.HumanResourcesPlatform.Candidate.repositories.CandidateRepository;
 import jakarta.annotation.PostConstruct;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;

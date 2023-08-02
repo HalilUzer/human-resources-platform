@@ -14,6 +14,7 @@ public class HrSpecialist {
     @Column(unique = true)
     private String username;
 
+
     public HrSpecialist(UUID hrSpecialistId, String username) {
         this.hrSpecialistId = hrSpecialistId;
         this.username = username;

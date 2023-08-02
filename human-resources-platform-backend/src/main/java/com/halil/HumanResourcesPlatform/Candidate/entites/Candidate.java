@@ -1,9 +1,8 @@
-package com.halil.HumanResourcesPlatform.Candidates.entites;
+package com.halil.HumanResourcesPlatform.Candidate.entites;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +16,7 @@ public class Candidate {
     private UUID candidateId;
 
     @Column(unique = true)
+    @JsonIgnore
     private String linkedinId;
     @OneToMany(cascade = CascadeType.ALL)
 

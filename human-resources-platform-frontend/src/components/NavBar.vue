@@ -24,11 +24,15 @@ const profileStore = useProfileStore();
 
                 <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <RouterLink to="/sign-in" class="nav-link text-white" role="button" v-if="!profileStore.isAuthenticated"><b>Sign In</b></RouterLink>
+                        <RouterLink to="/sign-in" class="nav-link text-white" role="button" v-if="!profileStore.isAuthenticated">Sign In</RouterLink>
+                    </li>
+                    <li class="nav-fill">
+                        <RouterLink to="/post-a-job" class="nav-link text-white" role="button"
+                            v-if="profileStore.getRole === 'HR_SPECIALIST'">Post a Job</RouterLink>
                     </li>
                     <li class="nav-fill">
                         <RouterLink to="/profile" class="nav-link text-white" role="button"
-                            v-if="profileStore.isAuthenticated">Profile</RouterLink>
+                            v-if="profileStore.getRole === 'CANDIDATE'">Profile</RouterLink>
                     </li>
                     <li class="nav-fill">
                         <a href="" class="nav-link text-white" role="button" v-if="profileStore.isAuthenticated"

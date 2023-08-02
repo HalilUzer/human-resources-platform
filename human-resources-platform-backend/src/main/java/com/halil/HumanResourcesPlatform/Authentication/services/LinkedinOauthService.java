@@ -4,8 +4,8 @@ import com.halil.HumanResourcesPlatform.Authentication.configs.LinkedinOauthConf
 
 import com.halil.HumanResourcesPlatform.Authentication.dtos.GetAccessTokenLinkedinResponeDto;
 import com.halil.HumanResourcesPlatform.Authentication.dtos.GetLiteProfileFromLinkedinDto;
-import com.halil.HumanResourcesPlatform.Candidates.entites.Candidate;
-import com.halil.HumanResourcesPlatform.Candidates.repositories.CandidateRepository;
+import com.halil.HumanResourcesPlatform.Candidate.entites.Candidate;
+import com.halil.HumanResourcesPlatform.Candidate.repositories.CandidateRepository;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.UUID;
 
 
 @Service

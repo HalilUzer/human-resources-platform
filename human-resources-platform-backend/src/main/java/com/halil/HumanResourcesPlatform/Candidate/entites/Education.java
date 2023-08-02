@@ -1,4 +1,4 @@
-package com.halil.HumanResourcesPlatform.Candidates.entites;
+package com.halil.HumanResourcesPlatform.Candidate.entites;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

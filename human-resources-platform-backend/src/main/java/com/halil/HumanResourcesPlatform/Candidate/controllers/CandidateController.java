@@ -1,7 +1,7 @@
-package com.halil.HumanResourcesPlatform.Candidates.controllers;
+package com.halil.HumanResourcesPlatform.Candidate.controllers;
 
-import com.halil.HumanResourcesPlatform.Candidates.entites.Candidate;
-import com.halil.HumanResourcesPlatform.Candidates.repositories.CandidateRepository;
+import com.halil.HumanResourcesPlatform.Candidate.entites.Candidate;
+import com.halil.HumanResourcesPlatform.Candidate.repositories.CandidateRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,4 +23,5 @@ public class CandidateController {
     public Candidate getCandidateProfile(@PathVariable UUID candidateId) {
         return candidateRepository.findById(candidateId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Candidate not found"));
     }
+
 }

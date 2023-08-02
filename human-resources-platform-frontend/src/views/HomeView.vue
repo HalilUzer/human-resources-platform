@@ -64,7 +64,6 @@ onMounted(async () => {
     <div class="container">
       <JobCardGroup :jobs="jobs"></JobCardGroup>
       <Pagination></Pagination>
-    
     </div>
 
   </main>

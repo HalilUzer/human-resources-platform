@@ -1,10 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
-import SignInView from '@/views/SignInView.vue'
-import ProfileUrlView from '@/views/ProfileUrlView.vue'
-import UnauthorizedView from '@/views/UnauthorizedView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import HomeView from '@/views/HomeView.vue';
+import SignInView from '@/views/SignInView.vue';
+import ProfileUrlView from '@/views/ProfileUrlView.vue';
+import UnauthorizedView from '@/views/UnauthorizedView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
-import ProfileView from '@/views/ProfileView.vue'
+import ProfileView from '@/views/ProfileView.vue';
+import PostAJobView from '@/views/PostAJobView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,9 +38,15 @@ const router = createRouter({
       component: NotFoundView
     },
     {
-      path: '/profile/:candidateId',
+      path: '/candidate/:candidate_id',
       name: 'profile',
       component: ProfileView
+    },
+    {
+      path:'/post-a-job',
+      name: 'postAJob',
+      component: PostAJobView
+
     }
 
   ]

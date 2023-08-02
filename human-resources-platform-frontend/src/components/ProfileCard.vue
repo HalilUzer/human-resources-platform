@@ -1,10 +1,4 @@
 <script setup lang="ts">
-import useProfileStore from '@/stores/profileStore';
-import { onMounted } from 'vue';
-
-
-
-const profileStore = useProfileStore();
 const props = defineProps<{
     firtName: string,
     lastName: string,
@@ -24,7 +18,7 @@ const props = defineProps<{
                             <p class="mb-0">Name</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">{{ firtName }}</p>
+                            <p class="mb-0">{{ firtName }}</p>
                         </div>
                     </div>
                     <hr>
@@ -33,15 +27,16 @@ const props = defineProps<{
                             <p class="mb-0">Surname</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">{{ lastName }}</p>
+                            <p class="mb-0">{{ lastName }}</p>
                         </div>
                     </div>
+                    <hr>
                     <div class="row">
                         <div class="col-sm-3">
                             <p class="mb-0">About</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">{{ about }}</p>
+                            <p class="mb-0">{{ about }}</p>
                         </div>
                     </div>
                 </div>
