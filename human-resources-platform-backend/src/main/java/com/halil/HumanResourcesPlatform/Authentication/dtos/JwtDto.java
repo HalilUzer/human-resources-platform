@@ -9,7 +9,7 @@ public record JwtDto(
 
         String role,
 
-        UUID candidate_id
+        UUID user_id
 
 ) { }
 

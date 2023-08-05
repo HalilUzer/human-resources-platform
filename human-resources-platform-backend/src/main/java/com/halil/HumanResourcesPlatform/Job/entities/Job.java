@@ -1,13 +1,11 @@
 package com.halil.HumanResourcesPlatform.Job.entities;
 
 
+import com.halil.HumanResourcesPlatform.Candidate.entites.Candidate;
 import com.halil.HumanResourcesPlatform.HrSpecialist.entities.HrSpecialist;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
-import java.util.List;
+import java.util.*;
 
 @Entity
 public class Job {
@@ -15,24 +13,31 @@ public class Job {
     @GeneratedValue
     private UUID jobId;
     @ManyToOne
+    @JoinColumn(name = "hr_specialist_id", nullable = false)
     HrSpecialist poster;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "job")
     private List<TechnicalSkill> technicalSkills = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "job")
     private List<PersonalSkill> personalSkills = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "applications",
+            joinColumns = @JoinColumn(name = "job_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    List<Candidate> applicants = new ArrayList<>();
     private String title;
     private Date until;
-    private State state;
+    private Status status;
     @Column(columnDefinition = "LONGTEXT")
     private String jobDescription;
 
-    public Job(HrSpecialist poster, List<TechnicalSkill> technicalSkills, List<PersonalSkill> personalSkills, String title, Date until, State state, String jobDescription) {
+    public Job(HrSpecialist poster, List<TechnicalSkill> technicalSkills, List<PersonalSkill> personalSkills, String title, Date until, Status status, String jobDescription) {
         this.poster = poster;
         this.technicalSkills = technicalSkills;
         this.personalSkills = personalSkills;
         this.title = title;
         this.until = until;
-        this.state = state;
+        this.status = status;
         this.jobDescription = jobDescription;
     }
 
@@ -63,6 +68,16 @@ public class Job {
         this.technicalSkills = technicalSkills;
     }
 
+    public void addTechnicalSkills(TechnicalSkill technicalSkill) {
+        technicalSkill.setJob(this);
+        this.technicalSkills.add(technicalSkill);
+    }
+
+    public void addPersonalSkill(PersonalSkill personalSkill) {
+        personalSkill.setJob(this);
+        this.personalSkills.add(personalSkill);
+    }
+
     public List<PersonalSkill> getPersonalSkills() {
         return personalSkills;
     }
@@ -87,12 +102,12 @@ public class Job {
         this.until = set;
     }
 
-    public State getState() {
-        return state;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public String getJobDescription() {
@@ -101,5 +116,17 @@ public class Job {
 
     public void setJobDescription(String jobDescription) {
         this.jobDescription = jobDescription;
+    }
+
+    public List<Candidate> getApplicants() {
+        return applicants;
+    }
+
+    public void setApplicants(List<Candidate> appliedCandidates) {
+        this.applicants = appliedCandidates;
+    }
+
+    public void pushAppliedCandidates(Candidate candidate){
+        this.applicants.add(candidate);
     }
 }

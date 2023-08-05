@@ -2,10 +2,12 @@ package com.halil.HumanResourcesPlatform.Candidate.entites;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.halil.HumanResourcesPlatform.Job.entities.Job;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity(name = "candidates")
@@ -14,17 +16,15 @@ public class Candidate {
     @Id
     @GeneratedValue
     private UUID candidateId;
-
     @Column(unique = true)
     @JsonIgnore
     private String linkedinId;
-    @OneToMany(cascade = CascadeType.ALL)
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "candidate")
     private List<Experience> experiences = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL)
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "candidate")
     private List<Education> educations = new ArrayList<>();
-
+    @ManyToMany
+    private List<Job> jobs = new ArrayList<>();
     @Column(columnDefinition = "LONGTEXT")
     private String about;
     private String name;
@@ -115,6 +115,10 @@ public class Candidate {
 
     public void setProfileUrl(String profileUrl) {
         this.profileUrl = profileUrl;
+    }
+
+    public void pushApplication(Job job){
+        this.jobs.add(job);
     }
 
 }

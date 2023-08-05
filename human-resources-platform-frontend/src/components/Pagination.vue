@@ -3,13 +3,14 @@
 
 
 <template>
-<nav>
-  <ul class="pagination">
+  <nav>
+    <ul class="pagination">
 
-            <PageItem v-for="(page, index) in pages" :key="index" :page-description="page.pageDescription" :page-link="page.pageLink"> 
-            </PageItem> 
-          </ul>
-</nav>
+      <PageItem v-for="(page, index) in pages" :key="index" :page-description="page.pageDescription"
+        :page-link="page.pageLink">
+      </PageItem>
+    </ul>
+  </nav>
 </template>
 
 <script setup lang="ts">
@@ -44,5 +45,4 @@ const pages = [
 ]
 </script>
 
-<style>
-</style>
+<style></style>

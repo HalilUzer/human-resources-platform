@@ -5,8 +5,6 @@ import { ref } from 'vue';
 import axios from 'axios';
 import useProfileStore from '@/stores/profileStore';
 
-
-
 const profileStore = useProfileStore();
 const personalSkills = ref<string[]>([]);
 const technicalSkills = ref<string[]>([]);
@@ -16,7 +14,7 @@ const date = ref<Date>(new Date());
 
 const personalSkill = ref('');
 const technicalSkill = ref('');
-const state = ref('');
+const status = ref('ACTIVE');
 
 function addTechnicalSkill() {
   technicalSkills.value.push(technicalSkill.value);
@@ -34,19 +32,35 @@ function deleteOne(text: string, skills: string[]) {
   skills.splice(index, 1);
 }
 
+function setState(value: string) {
+  status.value = value;
+}
 
-function postJob() {
 
-  console.log(date);
-  axios.post('http://localhost:8080/candidate', {
-    title,
+async function postJob() {
+
+  console.log({
+    title: title.value,
     job_description: jobDescription.value,
-    state: state.value,
-    until: date.value.getTime(),
+    state: status.value,
+    until: new Date(date.value).getTime(),
+    technical_skills: JSON.parse(JSON.stringify(technicalSkills.value)),
+    personal_skills: JSON.parse(JSON.stringify(personalSkills.value)),
+  })
+  const response = await axios.post('http://localhost:8080/job', {
+    title: title.value,
+    job_description: jobDescription.value,
+    status: status.value,
+    until: new Date(date.value).getTime(),
     technical_skills: technicalSkills.value,
     personal_skills: personalSkills.value,
-
+  }, {
+    headers: {
+      Authorization: `Bearer ${profileStore.getJwt}`
+    }
   })
+
+  console.log(response);
 }
 
 </script>
@@ -64,23 +78,26 @@ function postJob() {
       <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="jobDescription"></textarea>
     </div>
 
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
-        @click="state = 'PASSIVE'">
-      <label class="form-check-label" for="flexRadioDefault1">
-        Set passive
-      </label>
+
+    <div class="mt-3" v-if="profileStore.getRole === 'HR_SPECIALIST'">
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
+          @click="status = 'PASSIVE'">
+        <label class="form-check-label" for="flexRadioDefault1">
+          Passive
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked value="ACTIVE"
+          @click="status = 'ACTIVE'">
+        <label class="form-check-label" for="flexRadioDefault2">
+          Active
+        </label>
+      </div>
+      <label for="endDate">Until</label>
+      <div class="mb-3"><input id="datePicker" class="form-control" type="datetime-local" v-model="date"></div>
     </div>
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked
-        @click="state = 'ACTIVE'">
-      <label class="form-check-label" for="flexRadioDefault2">
-        Set active
-      </label>
-    </div>
-    <label for="endDate">Until</label>
-    <div class="mb-3"><input id="endDate" class="form-control" type="datetime-local" v-model="date"></div>
-    <Datepicker></Datepicker>
+
 
 
     <label for="technicalSkill">Technical Skills</label>

@@ -3,6 +3,7 @@ package com.halil.HumanResourcesPlatform.Authentication.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halil.HumanResourcesPlatform.Authentication.configs.PathsConfig;
@@ -56,6 +57,28 @@ public class AuthenticationProvider {
     @PostConstruct
     protected void init() {
         this.privateKey = Base64.getEncoder().encodeToString(this.privateKey.getBytes());
+    }
+
+
+    public Roles getRoleFromToken(String token){
+        Algorithm algorithm = Algorithm.HMAC256(privateKey);
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decoded = verifier.verify(token);
+        return Roles.valueOf(decoded.getClaim("role").asString());
+    }
+
+    public UUID getId(String token) throws TokenExpiredException {
+        Algorithm algorithm = Algorithm.HMAC256(privateKey);
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decoded = verifier.verify(token);
+        return UUID.fromString(decoded.getIssuer());
+    }
+
+    public Roles getRole(String token){
+        Algorithm algorithm = Algorithm.HMAC256(privateKey);
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decoded = verifier.verify(token);
+        return Roles.valueOf(decoded.getClaim("role").asString());
     }
 
     public String createToken(UUID id, Roles role) {

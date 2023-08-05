@@ -82,7 +82,7 @@ public class SeleniumService {
             Education education = getEducationRowFromLinkedin(i);
             if(education == null) break;
             education.setCandidate(candidate);
-            candidate.pushEducation(getEducationRowFromLinkedin(i));
+            candidate.pushEducation(education);
         }
         return candidate;
     }

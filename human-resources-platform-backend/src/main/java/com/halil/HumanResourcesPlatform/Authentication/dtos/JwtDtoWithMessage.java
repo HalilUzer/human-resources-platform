@@ -4,9 +4,7 @@ import java.util.UUID;
 
 public record JwtDtoWithMessage(
         String token,
-
         String role,
-
-        UUID candidate_id,
+        UUID user_id,
         String message
 ) { }

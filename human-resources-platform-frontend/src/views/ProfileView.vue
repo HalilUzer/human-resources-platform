@@ -7,7 +7,7 @@ import ProfileCard from '@/components/ProfileCard.vue';
 import ExperienceGroup from '@/components/ExperienceGroup.vue';
 import NavBar from '@/components/NavBar.vue';
 import type { Experience } from '@/types/Experience';
-import type { Education } from '@/types/Educations';
+import type { Education } from '@/types/Education';
 import EducationGroup from '@/components/EducationGroup.vue';
 
 const route = useRoute();
@@ -23,22 +23,16 @@ let educations: Education[];
 
 
 onMounted(async () => {
-    if (profileStore.getRole === 'HR_SPECIALIST') {
-        console.log('Empty');
+    try {
+        const response = await axios.get(`http://localhost:8080/candidate/${route.params.candidate_id}`)
+        experiences = response.data.experiences;
+        educations = response.data.educations;
+        name.value = response.data.name;
+        surname.value = response.data.surname;
+        about.value = response.data.about;
     }
-    else {
-        try {
-            const response = await axios.get(`http://localhost:8080/candidate/${route.params.candidate_id}`)
-            experiences = response.data.experiences;
-            educations = response.data.educations;
-            name.value = response.data.name;
-            surname.value = response.data.surname;
-            about.value = response.data.about;
-        }
-        catch (e) {
-            console.log(e);
-        }
-
+    catch (e) {
+        console.log(e);
     }
 });
 
@@ -59,7 +53,7 @@ onMounted(async () => {
             <h3>Education</h3>
         </div>
         <EducationGroup :educations="educations"></EducationGroup>
-        
+
     </div>
     <div class="row m-5">
         <div class="btn-group" role="group" aria-label="Basic example">

@@ -9,4 +9,5 @@ public interface CandidateRepository extends JpaRepository<Candidate, UUID> {
 
     public Candidate findCandidateByLinkedinId(String linkedinId);
     public boolean existsCandidateByLinkedinId(String linkedinId);
+
 }

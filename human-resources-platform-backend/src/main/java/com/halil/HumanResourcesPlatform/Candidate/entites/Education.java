@@ -7,10 +7,8 @@ import java.util.UUID;
 
 @Entity(name = "educations")
 public class Education {
-
-
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue
     @JsonIgnore
     UUID educationId;
 
@@ -18,7 +16,7 @@ public class Education {
     String university;
     String chapter;
     @ManyToOne
-    @JoinColumn(name = "candidate_id")
+    @JoinColumn(name = "user_id")
     @JsonIgnore
     Candidate candidate;
 

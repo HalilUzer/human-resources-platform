@@ -9,11 +9,11 @@ import java.util.UUID;
 public class Experience {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue
     @JsonIgnore
     UUID experienceId;
     @ManyToOne
-    @JoinColumn(name = "candidate_id")
+    @JoinColumn(name = "user_id")
     @JsonIgnore
     Candidate candidate;
     String title;

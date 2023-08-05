@@ -34,7 +34,8 @@ async function hrSpecialistSignIn() {
         console.log(response.data);
         profileStore.setJwt(response.data.token);
         profileStore.setRole(response.data.role);
-        await router.push('/')
+        profileStore.setUserId(response.data.user_id);
+        await router.push('/');
     }
     catch (error) {
         console.log(error);
@@ -91,4 +92,4 @@ async function hrSpecialistSignIn() {
 
 
 
-<style scoped></style>@/stores/profileStore
+<style scoped></style>

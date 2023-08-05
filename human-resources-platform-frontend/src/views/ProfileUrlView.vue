@@ -45,7 +45,7 @@ onMounted(async () => {
 
     profileStore.setJwt(signInResponse.data.token);
     profileStore.setRole(signInResponse.data.role);
-    profileStore.setUserId(signInResponse.data.candidate_id);
+    profileStore.setUserId(signInResponse.data.user_id);
     if (signInResponse.data.message === 'Exists') {
         await router.push('/');
     }

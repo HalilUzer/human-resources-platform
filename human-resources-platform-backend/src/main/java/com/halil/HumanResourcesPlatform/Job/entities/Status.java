@@ -1,5 +1,5 @@
 package com.halil.HumanResourcesPlatform.Job.entities;
 
-public enum State {
+public enum Status {
     ACTIVE, PASSIVE
 }

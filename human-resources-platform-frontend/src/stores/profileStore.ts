@@ -1,7 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import jwtDecode from 'jwt-decode'
-import router from '@/router';
 
 
 const useProfileStore = defineStore('profile', () => {
@@ -18,17 +17,10 @@ const useProfileStore = defineStore('profile', () => {
     }
   })
 
-  const getJwt = computed( async () => {
-    if (checkExpiration()) {
-      $reset()
-      await router.push('/');
-      return ''
-    }
-    else {
+  const getJwt = computed(() => {
       return jwt.value;
-    };
-
   })
+  
 
   function $reset() {
     jwt.value = '';
