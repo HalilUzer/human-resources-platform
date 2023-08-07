@@ -4,6 +4,7 @@ import BlueBadge from '@/components/BlueBadge.vue';
 import { ref } from 'vue';
 import axios from 'axios';
 import useProfileStore from '@/stores/profileStore';
+import router from '@/router';
 
 const profileStore = useProfileStore();
 const personalSkills = ref<string[]>([]);
@@ -59,8 +60,7 @@ async function postJob() {
       Authorization: `Bearer ${profileStore.getJwt}`
     }
   })
-
-  console.log(response);
+  await router.push(`/job/${response.data.jobId}`);
 }
 
 </script>

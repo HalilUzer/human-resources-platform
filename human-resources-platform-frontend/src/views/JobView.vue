@@ -1,31 +1,57 @@
 <script setup lang="ts">
 import NavBar from '@/components/NavBar.vue';
 import axios from 'axios';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import type { Job } from '@/types/Job';
 import { useRoute } from 'vue-router';
 import useProfileStore from '@/stores/profileStore';
 import router from '@/router';
 import ApplicantGroup from '@/components/ApplicantGroup.vue';
-import type { Candidate } from '@/types/Candidate';
+import type {Applicant} from '@/types/Applicant';
+import type { Application } from '@/types/Application';
+import CheckIcon from '@/components/CheckIcon.vue';
 
 const profileStore = useProfileStore();
 const route = useRoute();
 const job = ref<Job>();
 const status = ref('ACTIVE');
 const date = ref<Date>(new Date());
-const applicants = ref<Candidate[]>([]);
+const applicants = ref<Applicant[]>([]);
+const applications = ref<Application[]>([]);
+const isApplied = computed<boolean>(() => {
+    for (const application of applications.value) {
+        if (application.jobId === route.params.job_id) {
+            return true;
+        }
+    }
+    return false;
+})
+
 onMounted(async () => {
     const response = await axios.get(`http://localhost:8080/job/${route.params.job_id}`);
     job.value = response.data;
-    if(profileStore.getRole === 'HR_SPECIALIST' && profileStore.getUserId === job.value?.poster.hrSpecialistId){
-        const response = await axios.get(`http://localhost:8080/job/${route.params.job_id}/applicants`,{
+    if (profileStore.getRole === 'HR_SPECIALIST' && profileStore.getUserId === job.value?.poster.hrSpecialistId) {
+        const response = await axios.get(`http://localhost:8080/job/${route.params.job_id}/applicants`, {
             headers: {
                 Authorization: `Bearer ${profileStore.getJwt}`
             }
         });
-        applicants.value = response.data.applicants;
-        console.log(applicants);
+        applicants.value = response.data.applications;
+    }
+    if (profileStore.getRole === 'CANDIDATE') {
+        try {
+            const response = await axios.get(`http://localhost:8080/candidate/${profileStore.getUserId}/applications`, {
+                headers: {
+                    Authorization: `Bearer ${profileStore.getJwt}`
+                }
+            });
+            
+            applications.value = response.data.applications.map((value: any) => value.job);
+
+        }
+        catch (e) {
+            console.log(e);
+        }
     }
 })
 
@@ -33,11 +59,25 @@ async function apply() {
     if (profileStore.getRole !== 'CANDIDATE' || profileStore.getJwt === '') {
         await router.push('/sign-in')
     }
-    const response = await axios.put(`http://localhost:8080/job/${route.params.job_id}/apply`, null, {
-        headers: {
-            Authorization: `Bearer ${profileStore.getJwt}`
-        }
-    });
+    try {
+        const response = await axios.put(`http://localhost:8080/job/${route.params.job_id}/apply`, null, {
+            headers: {
+                Authorization: `Bearer ${profileStore.getJwt}`
+            }
+        })
+        applications.value.push({
+            title: job.value?.title!,
+            jobId: job.value?.jobId!,
+            poster: {
+                username: job.value?.poster.username!
+            }
+
+        })
+
+    }
+    catch (e) {
+        console.log(e);
+    };
 
 }
 
@@ -58,6 +98,23 @@ async function setStatus() {
         console.log(e);
     }
 }
+
+async function changeApplicantStatus(status: string) {
+    console.log(status);
+    try {
+        const response = await axios.put(`http://localhost:8080/application/{applicationId}/status`, {
+            status
+        }, {
+            headers: {
+                Authorization: `Bearer ${profileStore.getJwt}`
+            }
+        })
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+
 </script>
 
 <template>
@@ -93,19 +150,25 @@ async function setStatus() {
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-4" >
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-sm-12 text-center">
                                     <button type="button" class="btn btn-success"
-                                        v-if="job?.status === 'ACTIVE' && profileStore.getRole != 'HR_SPECIALIST'"
+                                        v-if="job?.status === 'ACTIVE' && profileStore.getRole != 'HR_SPECIALIST' && !(profileStore.getRole === 'CANDIDATE' && isApplied === true)"
                                         @click="apply">Apply</button>
+
+
+                                    <div v-if="profileStore.getRole === 'CANDIDATE' && isApplied === true">
+                                        <CheckIcon></CheckIcon> <span style="color: #3A833A;"><b>Applied</b></span>
+                                    </div>
+
                                     <button type="button" class="btn btn-success" disabled
                                         v-if="job?.status === 'PASSIVE' && profileStore.getRole != 'HR_SPECIALIST'">Apply</button>
 
                                 </div>
-                                <div class="mt-3" v-if="profileStore.getRole === 'HR_SPECIALIST'">
+                                <div class="mt-3" v-if="profileStore.getRole === 'HR_SPECIALIST' && profileStore.getUserId === job?.poster.hrSpecialistId">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="flexRadioDefault"
                                             id="flexRadioDefault1" @click="status = 'PASSIVE'">
@@ -124,7 +187,7 @@ async function setStatus() {
                                     <div class="mb-3"><input id="datePicker" class="form-control" type="datetime-local"
                                             v-model="date"></div>
                                     <div class="text-center"><button type="button" class="btn btn-dark m-3"
-                                            @click="setStatus" style="background-color: rgb(7, 24, 61)">Set Status</button>
+                                            @click="setStatus" style="background-color: rgb(7, 24, 61)">Set Post Status</button>
                                     </div>
                                 </div>
                             </div>
@@ -134,13 +197,15 @@ async function setStatus() {
                     </div>
                 </div>
             </div>
-            <ApplicantGroup :applicants="applicants"></ApplicantGroup>
+            <ApplicantGroup :applicants="applicants" @change-status="changeApplicantStatus($event)"
+                v-if="profileStore.getRole === 'HR_SPECIALIST' && profileStore.getUserId === job?.poster.hrSpecialistId">
+            </ApplicantGroup>
 
         </div>
-    
-        
+
+
     </div>
 </template>
 
 
-<style></style>
+<style></style>@/types/Applicant

@@ -2,7 +2,8 @@
 const props = defineProps<{
     firtName: string,
     lastName: string,
-    about: string
+    about: string,
+    email: string
 }>()
 
 </script>
@@ -37,6 +38,15 @@ const props = defineProps<{
                         </div>
                         <div class="col-sm-9">
                             <p class="mb-0">{{ about }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Email</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="mb-0">{{ email }}</p>
                         </div>
                     </div>
                 </div>

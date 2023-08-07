@@ -1,15 +1,18 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import jwtDecode from 'jwt-decode'
-
+import { useLocalStorage } from '@vueuse/core'
 
 const useProfileStore = defineStore('profile', () => {
 
-  const jwt = ref('');
-  const role = ref('');
-  const userId = ref('');
+  const profile = ref(useLocalStorage("profile", {
+    jwt: '',
+    role: '',
+    userId: '',
+  }))
+
   const isAuthenticated = computed(() => {
-    if (jwt.value === '') {
+    if (profile.value.jwt === '') {
       return false;
     }
     else {
@@ -18,34 +21,34 @@ const useProfileStore = defineStore('profile', () => {
   })
 
   const getJwt = computed(() => {
-      return jwt.value;
+      return profile.value.jwt;
   })
   
 
   function $reset() {
-    jwt.value = '';
-    role.value = '';
+
+    localStorage.clear();
   }
 
-  const getUserId = computed(() => userId.value);
+  const getUserId = computed(() => profile.value.userId);
 
   function setUserId(value :string){
-    userId.value = value;
+    profile.value.userId = value;
   }
 
-  const getRole = computed(() => role.value);
+  const getRole = computed(() => profile.value.role);
 
 
   function setJwt(value: string) {
-    jwt.value = value;
+    profile.value.jwt = value;
   }
 
   function setRole(value: string) {
-    role.value = value;
+    profile.value.role = value;
   }
 
   function checkExpiration(): boolean {
-    const decoded: any = jwtDecode(jwt.value);
+    const decoded: any = jwtDecode(profile.value.jwt);
     if (Date.now() >= decoded.exp * 1000) {
       return true;
     }

@@ -3,7 +3,7 @@ package com.halil.HumanResourcesPlatform.Authentication.security.filters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halil.HumanResourcesPlatform.Authentication.security.CachedBodyHttpServletRequest;
 import com.halil.HumanResourcesPlatform.Authentication.security.AuthenticationProvider;
-import com.halil.HumanResourcesPlatform.HrSpecialist.repositories.LdapHrSpecialist;
+import com.halil.HumanResourcesPlatform.HrSpecialists.repositories.LdapHrSpecialist;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,10 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.halil.HumanResourcesPlatform.HrSpecialist.entities.HrSpecialist;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 public class UsernamePasswordFilter extends OncePerRequestFilter {
 

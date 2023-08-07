@@ -5,13 +5,12 @@ import { useRoute } from 'vue-router'
 import axios from 'axios';
 import { onMounted } from 'vue'
 import JobCardGroup from '@/components/JobCardGroup.vue';
-import Pagination from '@/components/Pagination.vue';
 import type { Job } from '@/types/Job';
 import { ref } from 'vue';
 
 const route = useRoute();
 
-const jobs = ref<Job[]>();
+const jobs = ref<Job[]>([]);
 
 
 
@@ -26,7 +25,7 @@ onMounted(async () => {
   <main>
     <NavBar></NavBar>
     <div class="container">
-      <JobCardGroup :jobs="jobs!"></JobCardGroup>
+      <JobCardGroup :jobs="jobs"></JobCardGroup>
     </div>
 
   </main>

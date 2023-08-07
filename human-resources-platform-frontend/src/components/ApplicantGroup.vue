@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import type { Candidate } from '@/types/Candidate'
-import CandidateCard from './CandidateCard.vue';
+import type { Applicant } from '@/types/Applicant';
+import ApplicantCard from './ApplicantCard.vue';
 
 const props = defineProps<{
-    applicants: Candidate[]
+    applicants: Applicant[],
 }>()
+
+const emit = defineEmits(['changeStatus']);
 
 </script>
 
@@ -13,11 +15,10 @@ const props = defineProps<{
         <div class="col-lg-8">
             <div class="mb-4">
                 <div class="card-body">
-                    <h3>Applicants</h3>
                     <div class="list-group">
-                        <CandidateCard v-for="(candidate, index) in  applicants" :key="index"
-                            :candidate-id="candidate.candidateId" :name="candidate.name" :surname="candidate.surname">
-                        </CandidateCard>
+                        <ApplicantCard v-for="(applicant, index) in  applicants" :key="index" :applicant="applicant"
+                            @change-status="emit('changeStatus', $event)">
+                        </ApplicantCard>
                     </div>
                 </div>
             </div>

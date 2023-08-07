@@ -1,8 +1,7 @@
 package com.halil.HumanResourcesPlatform.Authentication.services;
 
-import com.halil.HumanResourcesPlatform.HrSpecialist.entities.HrSpecialist;
-import com.halil.HumanResourcesPlatform.HrSpecialist.repositories.LdapHrSpecialist;
-import com.halil.HumanResourcesPlatform.HrSpecialist.repositories.LdapHrSpecialistRepository;
+import com.halil.HumanResourcesPlatform.HrSpecialists.repositories.LdapHrSpecialist;
+import com.halil.HumanResourcesPlatform.HrSpecialists.repositories.LdapHrSpecialistRepository;
 import org.springframework.stereotype.Service;
 
 @Service

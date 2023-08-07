@@ -4,8 +4,8 @@ import com.halil.HumanResourcesPlatform.Authentication.configs.LinkedinOauthConf
 
 import com.halil.HumanResourcesPlatform.Authentication.dtos.GetAccessTokenLinkedinResponeDto;
 import com.halil.HumanResourcesPlatform.Authentication.dtos.GetLiteProfileFromLinkedinDto;
-import com.halil.HumanResourcesPlatform.Candidate.entites.Candidate;
-import com.halil.HumanResourcesPlatform.Candidate.repositories.CandidateRepository;
+import com.halil.HumanResourcesPlatform.Candidates.entites.Candidate;
+import com.halil.HumanResourcesPlatform.Candidates.repositories.CandidateRepository;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,11 +68,28 @@ public class LinkedinOauthService {
                 .bodyToMono(GetLiteProfileFromLinkedinDto.class)
                 .block();
 
+
         Candidate candidate = new Candidate();
 
         candidate.setLinkedinId(getLiteProfileFromLinkedinDto.id());
         candidate.setName(getLiteProfileFromLinkedinDto.localizedFirstName());
         candidate.setSurname(getLiteProfileFromLinkedinDto.localizedLastName());
         return candidate;
+    }
+
+
+    public void revokeToken(String accessToken){
+        WebClient.Builder webClient = WebClient.builder();
+        String url = "https://www.linkedin.com/oauth/v2/revoke";
+        webClient.build()
+                .post()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData("client_id", oauthConfigProperties.clientId())
+                        .with("client_secret",oauthConfigProperties.clientSecret())
+                        .with("token", accessToken))
+                .retrieve()
+                .toBodilessEntity()
+                .block();
     }
 }

@@ -1,6 +1,6 @@
 package com.halil.HumanResourcesPlatform;
 
-import com.halil.HumanResourcesPlatform.HrSpecialist.repositories.LdapHrSpecialistRepository;
+import com.halil.HumanResourcesPlatform.HrSpecialists.repositories.LdapHrSpecialistRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

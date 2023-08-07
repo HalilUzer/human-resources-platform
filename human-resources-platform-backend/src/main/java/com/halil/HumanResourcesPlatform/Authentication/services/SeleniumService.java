@@ -1,9 +1,9 @@
 package com.halil.HumanResourcesPlatform.Authentication.services;
 
-import com.halil.HumanResourcesPlatform.Candidate.entites.Candidate;
-import com.halil.HumanResourcesPlatform.Candidate.entites.Education;
-import com.halil.HumanResourcesPlatform.Candidate.entites.Experience;
-import com.halil.HumanResourcesPlatform.Candidate.repositories.CandidateRepository;
+import com.halil.HumanResourcesPlatform.Candidates.entites.Candidate;
+import com.halil.HumanResourcesPlatform.Candidates.entites.Education;
+import com.halil.HumanResourcesPlatform.Candidates.entites.Experience;
+import com.halil.HumanResourcesPlatform.Candidates.repositories.CandidateRepository;
 import jakarta.annotation.PostConstruct;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -107,8 +107,13 @@ public class SeleniumService {
             description = chromeDriver.findElement(By.xpath("//*[@id=\"experience\"]/../div[3]/ul/li[" + index + "]/div/div[2]/div[2]/ul/li[2]"));
             experience.setDescription(description.getText());
         } catch (Exception e) {
-            description = chromeDriver.findElement(By.xpath("//*[@id=\"experience\"]/../div[3]/ul/li[" + index + "]/div/div[2]/div[2]/ul/li[1]"));
-            experience.setDescription(description.getText());
+            try{
+                description = chromeDriver.findElement(By.xpath("//*[@id=\"experience\"]/../div[3]/ul/li[" + index + "]/div/div[2]/div[2]/ul/li[1]"));
+                experience.setDescription(description.getText());
+            }
+            catch (Exception e1){
+
+            }
         }
         return experience;
     }
@@ -138,10 +143,34 @@ public class SeleniumService {
 
     public Candidate fillCandidateDataFromLinkedin(Candidate candidate) {
         chromeDriver.get(candidate.getProfileUrl());
-        chromeDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(1));
+        chromeDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
         candidate = getExperienceFromLinkedin(candidate);
         candidate = getAboutFromLinkedin(candidate);
         candidate = getEducationFromLinkedin(candidate);
+        candidate.setImageSource(getProfilePhotoUrl());
+        candidate.setEmail(getEmail());
         return candidate;
+    }
+
+    public String getProfilePhotoUrl(){
+        WebElement img = chromeDriver.findElement(By.xpath("//section[@class='artdeco-card ember-view pv-top-card']/div[2]/div[1]/div[1]/div[1]/button/img"));
+        String imgSrc = img.getAttribute("src");
+        logger.info(imgSrc);
+        return imgSrc;
+    }
+
+    public String getEmail(){
+        WebElement contactInfo = chromeDriver.findElement(By.id("top-card-text-details-contact-info"));
+        contactInfo.click();
+        chromeDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        String email;
+        try{
+            email = chromeDriver.findElement(By.xpath("//div[contains(@class, 'pv-profile-section__section-info section-info')]/section[2]/div/a")).getText();
+        }
+        catch (NoSuchElementException e){
+            email = null;
+        }
+        logger.info(email);
+        return email;
     }
 }

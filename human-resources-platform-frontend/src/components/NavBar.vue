@@ -5,7 +5,7 @@ import router from '@/router';
 
 const profileStore = useProfileStore();
 
-async function signOut(){
+async function signOut() {
     profileStore.$reset();
     await router.push('/')
 }
@@ -34,15 +34,16 @@ async function goToProfile() {
 
                 <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <RouterLink to="/sign-in" class="nav-link text-white" role="button" v-if="!profileStore.isAuthenticated">Sign In</RouterLink>
+                        <RouterLink to="/sign-in" class="nav-link text-white" role="button"
+                            v-if="!profileStore.isAuthenticated">Sign In</RouterLink>
                     </li>
                     <li class="nav-fill">
                         <RouterLink to="/post-a-job" class="nav-link text-white" role="button"
                             v-if="profileStore.getRole === 'HR_SPECIALIST'">Post a Job</RouterLink>
                     </li>
                     <li class="nav-fill">
-                        <a  class="nav-link text-white" role="button"
-                            v-if="profileStore.getRole === 'CANDIDATE'" @click="goToProfile">Profile</a>
+                        <a class="nav-link text-white" role="button" v-if="profileStore.getRole === 'CANDIDATE'"
+                            @click="goToProfile">Profile</a>
                     </li>
                     <li class="nav-fill">
                         <a href="" class="nav-link text-white" role="button" v-if="profileStore.isAuthenticated"
