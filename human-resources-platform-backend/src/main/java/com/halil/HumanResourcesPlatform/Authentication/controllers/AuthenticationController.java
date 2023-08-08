@@ -2,6 +2,7 @@ package com.halil.HumanResourcesPlatform.Authentication.controllers;
 
 import com.halil.HumanResourcesPlatform.Authentication.configs.Roles;
 import com.halil.HumanResourcesPlatform.Authentication.dtos.*;
+import com.halil.HumanResourcesPlatform.Authentication.dtos.GetEmailFromLinkedin.GetEmailFromLinkedinDto;
 import com.halil.HumanResourcesPlatform.Authentication.security.AuthenticationProvider;
 import com.halil.HumanResourcesPlatform.Authentication.services.LinkedinOauthService;
 import com.halil.HumanResourcesPlatform.Authentication.services.SeleniumService;
@@ -53,6 +54,7 @@ public class AuthenticationController {
     public JwtDtoWithMessage linkedinSignIn(@Valid @RequestBody LinkedinSignInDto linkedinSignInDto) {
         String accessToken = linkedinOauthService.getAccessTokenFromLinkedin(linkedinSignInDto.code());
         Candidate candidate = linkedinOauthService.createCandidateFromLinkedinOauth(accessToken);
+
         String message;
         if (candidateRepository.existsCandidateByLinkedinId(candidate.getLinkedinId())) {
             candidate = candidateRepository.findCandidateByLinkedinId(candidate.getLinkedinId());
@@ -61,7 +63,7 @@ public class AuthenticationController {
             candidateRepository.save(candidate);
             message = "Created";
         }
-        linkedinOauthService.revokeToken(accessToken);
+
         String jwt = authenticationProvider.createToken(candidate.getCandidateId(), Roles.CANDIDATE);
         return new JwtDtoWithMessage(jwt, Roles.CANDIDATE.toString(), candidate.getCandidateId(), message);
     }
@@ -70,17 +72,10 @@ public class AuthenticationController {
     @ResponseStatus(HttpStatus.CREATED)
     public void buildProfile(@Valid @RequestBody LinkedinBuildProfileDto linkedinBuildProfileDto) {
         logger.info(linkedinBuildProfileDto.candidate_id().toString());
-        ;
+
         Candidate candidate = candidateRepository.findById(linkedinBuildProfileDto.candidate_id()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Candidate not found"));
         candidate.setProfileUrl(linkedinBuildProfileDto.profile_url());
         candidate = seleniumService.fillCandidateDataFromLinkedin(candidate);
         candidateRepository.save(candidate);
-    }
-
-    @GetMapping("/linkedin/get-email")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void buildProfile() {
-        String url = "https://www.linkedin.com/in/halil-uzer/";
-        seleniumService.getProfilePhotoUrl();
     }
 }

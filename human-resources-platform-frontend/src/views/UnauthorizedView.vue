@@ -5,10 +5,11 @@ import ColorfulLogo from '@/components/ColorfulLogo.vue';
 
 
 <template>
-    <ColorfulLogo>
-</ColorfulLogo>
-<h1>Unauthorized</h1>
+    <div class="text-center">
+        <ColorfulLogo>
+        </ColorfulLogo>
+        <h1>Unauthorized</h1>
+    </div>
 </template>
 
-<style>
-</style>
+<style></style>

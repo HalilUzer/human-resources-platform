@@ -3,6 +3,7 @@ package com.halil.HumanResourcesPlatform.Jobs.controllers;
 import com.halil.HumanResourcesPlatform.Authentication.security.AuthenticationProvider;
 import com.halil.HumanResourcesPlatform.Candidates.entites.Candidate;
 import com.halil.HumanResourcesPlatform.Candidates.repositories.CandidateRepository;
+import com.halil.HumanResourcesPlatform.HrSpecialists.entities.HrSpecialist;
 import com.halil.HumanResourcesPlatform.HrSpecialists.repositories.HrSpecialistRepository;
 import com.halil.HumanResourcesPlatform.Jobs.dtos.ChangeJobStatusDto;
 import com.halil.HumanResourcesPlatform.Applications.entities.Application;
@@ -11,6 +12,7 @@ import com.halil.HumanResourcesPlatform.Jobs.dtos.JobIdDto;
 import com.halil.HumanResourcesPlatform.Jobs.projections.ApplicantProjection;
 import com.halil.HumanResourcesPlatform.Applications.repositories.ApplicationRepository;
 import com.halil.HumanResourcesPlatform.Jobs.projections.JobProjection;
+import com.halil.HumanResourcesPlatform.Jobs.projections.JobsProjection;
 import com.halil.HumanResourcesPlatform.Jobs.services.JobService;
 import com.halil.HumanResourcesPlatform.Jobs.dtos.CreateJobDto;
 import com.halil.HumanResourcesPlatform.Jobs.entities.Job;
@@ -58,14 +60,17 @@ public class JobController {
         UUID hrSpecialistId;
         hrSpecialistId = authenticationProvider.getId(token);
         Job job = jobService.buildJobFromDto(createJobDto, hrSpecialistId);
+        HrSpecialist hrSpecialist = hrSpecialistRepository.findById(hrSpecialistId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hr specialist not found"));
+        hrSpecialist.pushJob(job);
+        hrSpecialistRepository.save(hrSpecialist);
         jobRepository.save(job);
         return new JobIdDto(job.getJobId());
     }
 
     @GetMapping("/jobs")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<JobProjection> getAllJobs() {
-        List<JobProjection> activeJobs = jobRepository.getJobsByStatus(Status.ACTIVE);
+    public List<JobsProjection> getAllJobs() {
+        List<JobsProjection> activeJobs = jobRepository.getJobsByStatus(Status.ACTIVE);
         return activeJobs;
     }
 

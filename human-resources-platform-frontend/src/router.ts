@@ -7,6 +7,8 @@ import NotFoundView from '@/views/NotFoundView.vue';
 import ProfileView from '@/views/ProfileView.vue';
 import PostAJobView from '@/views/PostAJobView.vue';
 import JobView from '@/views/JobView.vue'
+import useProfileStore from './stores/profileStore';
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,16 +48,18 @@ const router = createRouter({
     {
       path:'/post-a-job',
       name: 'postAJob',
-      component: PostAJobView
-
+      component: PostAJobView,
     },
     {
       path: '/job/:job_id',
       name: 'job',
       component: JobView
     }
-
   ]
 })
 
+
+
 export default router
+
+

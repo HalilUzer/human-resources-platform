@@ -7,10 +7,11 @@ import { onMounted } from 'vue'
 import JobCardGroup from '@/components/JobCardGroup.vue';
 import type { Job } from '@/types/Job';
 import { ref } from 'vue';
+import type { JobLite } from '@/types/JobLite';
 
 const route = useRoute();
 
-const jobs = ref<Job[]>([]);
+const jobs = ref<JobLite[]>([]);
 
 
 

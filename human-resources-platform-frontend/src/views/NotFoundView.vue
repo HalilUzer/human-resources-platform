@@ -4,11 +4,12 @@ import ColorfulLogo from '@/components/ColorfulLogo.vue';
 
 
 <template>
-<ColorfulLogo>
-</ColorfulLogo>
-<h1>We couldnt find what are you looking for.</h1>
+    <div class="text-center">
+        <ColorfulLogo>
+        </ColorfulLogo>
+        <h1>We couldnt find what are you looking for.</h1>
+    </div>
 </template>
 
 
-<style>
-</style>
+<style></style>

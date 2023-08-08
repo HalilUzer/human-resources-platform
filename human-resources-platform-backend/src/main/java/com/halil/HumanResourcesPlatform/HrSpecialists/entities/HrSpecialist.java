@@ -1,7 +1,9 @@
 package com.halil.HumanResourcesPlatform.HrSpecialists.entities;
 
+import com.halil.HumanResourcesPlatform.Jobs.entities.Job;
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -13,6 +15,9 @@ public class HrSpecialist {
 
     @Column(unique = true)
     private String username;
+
+    @OneToMany(mappedBy = "poster")
+    private List<Job> postedJobs;
 
 
     public HrSpecialist(UUID hrSpecialistId, String username) {
@@ -36,5 +41,18 @@ public class HrSpecialist {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public List<Job> getPostedJobs() {
+        return postedJobs;
+    }
+
+
+    public void pushJob(Job job){
+        this.postedJobs.add(job);
+    }
+
+    public void setPostedJobs(List<Job> postedJobs) {
+        this.postedJobs = postedJobs;
     }
 }

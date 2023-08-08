@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import NavBar from '@/components/NavBar.vue';
 import BlueBadge from '@/components/BlueBadge.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import useProfileStore from '@/stores/profileStore';
 import router from '@/router';
@@ -12,6 +12,7 @@ const technicalSkills = ref<string[]>([]);
 const title = ref('');
 const jobDescription = ref('');
 const date = ref<Date>(new Date());
+const alertFlag = ref<boolean>(false);
 
 const personalSkill = ref('');
 const technicalSkill = ref('');
@@ -40,28 +41,36 @@ function setState(value: string) {
 
 async function postJob() {
 
-  console.log({
-    title: title.value,
-    job_description: jobDescription.value,
-    state: status.value,
-    until: new Date(date.value).getTime(),
-    technical_skills: JSON.parse(JSON.stringify(technicalSkills.value)),
-    personal_skills: JSON.parse(JSON.stringify(personalSkills.value)),
-  })
-  const response = await axios.post('http://localhost:8080/job', {
-    title: title.value,
-    job_description: jobDescription.value,
-    status: status.value,
-    until: new Date(date.value).getTime(),
-    technical_skills: technicalSkills.value,
-    personal_skills: personalSkills.value,
-  }, {
-    headers: {
-      Authorization: `Bearer ${profileStore.getJwt}`
+  try {
+    const response = await axios.post('http://localhost:8080/job', {
+      title: title.value,
+      job_description: jobDescription.value,
+      status: status.value,
+      until: new Date(date.value).getTime(),
+      technical_skills: technicalSkills.value,
+      personal_skills: personalSkills.value,
+    }, {
+      headers: {
+        Authorization: `Bearer ${profileStore.getJwt}`
+      }
+
+    })
+    await router.push(`/job/${response.data.jobId}`);
+  }
+  catch (e: any) {
+    if (e.code === 'ERR_BAD_REQUEST') {
+      alertFlag.value = true;
     }
-  })
-  await router.push(`/job/${response.data.jobId}`);
+  }
 }
+onMounted(async () => {
+  if(profileStore.getRole !== 'HR_SPECIALIST'){
+    await router.push('/unauthorized');
+  }
+})
+
+
+
 
 </script>
 
@@ -112,7 +121,9 @@ async function postJob() {
     <BlueBadge v-for="(personalSkill, index) in personalSkills" :key="index" :text="personalSkill"
       @delete="(text: string) => deleteOne(text, personalSkills)"></BlueBadge>
 
-
+    <div class="alert alert-danger mt-3" v-if="alertFlag" role="alert">
+      Please fill all the gaps!
+    </div>
   </div>
   <div class="text-center"><button type="button" class="btn btn-dark m-3" @click="postJob"
       style="background-color: rgb(7, 24, 61)">Post</button></div>

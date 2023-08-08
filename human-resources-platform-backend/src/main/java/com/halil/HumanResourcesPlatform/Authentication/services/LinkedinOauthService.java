@@ -1,8 +1,8 @@
 package com.halil.HumanResourcesPlatform.Authentication.services;
 
 import com.halil.HumanResourcesPlatform.Authentication.configs.LinkedinOauthConfigProperties;
-
 import com.halil.HumanResourcesPlatform.Authentication.dtos.GetAccessTokenLinkedinResponeDto;
+import com.halil.HumanResourcesPlatform.Authentication.dtos.GetEmailFromLinkedin.GetEmailFromLinkedinDto;
 import com.halil.HumanResourcesPlatform.Authentication.dtos.GetLiteProfileFromLinkedinDto;
 import com.halil.HumanResourcesPlatform.Candidates.entites.Candidate;
 import com.halil.HumanResourcesPlatform.Candidates.repositories.CandidateRepository;
@@ -48,7 +48,7 @@ public class LinkedinOauthService {
                         .with("client_id", oauthConfigProperties.clientId())
                         .with("client_secret", oauthConfigProperties.clientSecret())
                         .with("redirect_uri", oauthConfigProperties.redirectUri())
-                        .with("scope", "r_liteprofile"))
+                        .with("scope", "r_liteprofile r_emailaddress"))
                 .retrieve()
                 .bodyToMono(GetAccessTokenLinkedinResponeDto.class)
                 .block();
@@ -57,9 +57,20 @@ public class LinkedinOauthService {
     }
 
     public Candidate createCandidateFromLinkedinOauth(String accessToken) {
+        GetLiteProfileFromLinkedinDto getLiteProfileFromLinkedinDto = getLiteProfileFromLinkedin(accessToken);
+        GetEmailFromLinkedinDto getEmailFromLinkedinDto = getEmailFromLinkedin(accessToken);
+
+        Candidate candidate = new Candidate();
+        candidate.setLinkedinId(getLiteProfileFromLinkedinDto.id());
+        candidate.setName(getLiteProfileFromLinkedinDto.localizedFirstName());
+        candidate.setSurname(getLiteProfileFromLinkedinDto.localizedLastName());
+        candidate.setEmail(getEmailFromLinkedinDto.elements().get(0).handler().emailAddress());
+        return candidate;
+    }
+
+    public GetLiteProfileFromLinkedinDto getLiteProfileFromLinkedin(String accessToken) {
         WebClient.Builder webClient = WebClient.builder();
         String url = "https://api.linkedin.com/v2/me";
-
         @Valid GetLiteProfileFromLinkedinDto getLiteProfileFromLinkedinDto = webClient.build()
                 .get()
                 .uri(url)
@@ -68,17 +79,26 @@ public class LinkedinOauthService {
                 .bodyToMono(GetLiteProfileFromLinkedinDto.class)
                 .block();
 
+        return getLiteProfileFromLinkedinDto;
+    }
 
-        Candidate candidate = new Candidate();
+    public GetEmailFromLinkedinDto getEmailFromLinkedin(String accessToken) {
+        WebClient.Builder webClient = WebClient.builder();
+        String url = "https://api.linkedin.com/v2/clientAwareMemberHandles?q=members&projection=(elements*(primary,type,handle~))";
+        GetEmailFromLinkedinDto getEmailFromLinkedinDto = webClient.build()
+                .get()
+                .uri(url)
+                .headers(httpHeaders -> httpHeaders.setBearerAuth(accessToken))
+                .retrieve()
+                .bodyToMono(GetEmailFromLinkedinDto.class)
+                .block();
 
-        candidate.setLinkedinId(getLiteProfileFromLinkedinDto.id());
-        candidate.setName(getLiteProfileFromLinkedinDto.localizedFirstName());
-        candidate.setSurname(getLiteProfileFromLinkedinDto.localizedLastName());
-        return candidate;
+
+        return getEmailFromLinkedinDto;
     }
 
 
-    public void revokeToken(String accessToken){
+    public void revokeToken(String accessToken) {
         WebClient.Builder webClient = WebClient.builder();
         String url = "https://www.linkedin.com/oauth/v2/revoke";
         webClient.build()
@@ -86,7 +106,7 @@ public class LinkedinOauthService {
                 .uri(url)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData("client_id", oauthConfigProperties.clientId())
-                        .with("client_secret",oauthConfigProperties.clientSecret())
+                        .with("client_secret", oauthConfigProperties.clientSecret())
                         .with("token", accessToken))
                 .retrieve()
                 .toBodilessEntity()

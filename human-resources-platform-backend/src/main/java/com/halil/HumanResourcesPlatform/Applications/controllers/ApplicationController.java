@@ -33,13 +33,14 @@ public class ApplicationController {
 
     @PutMapping("/application/{applicationId}/status")
     public void changeApplicationStatus(@PathVariable UUID applicationId, @Valid @RequestBody ChangeApplicationStatusDto applicationStatusDto, @RequestHeader(name = "Authorization") String token) {
+        token = token.split(" ")[1];
         Application application = this.applicationRepository.findById(applicationId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Application not found"));
         Job job = application.getJob();
         UUID hrSpecialistId = authenticationProvider.getId(token);
         if (!job.getPoster().getHrSpecialistId().equals(hrSpecialistId)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
-
+        emailService.sendSimpleMessage(application.getCandidate().getEmail(), "Change of Status", "Your application rejected ");
         application.setStatus(applicationStatusDto.status());
         applicationRepository.save(application);
     }

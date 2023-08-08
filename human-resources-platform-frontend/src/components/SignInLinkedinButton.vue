@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { linkedinSigninConstants } from '@/constants';
 
-const signInWithLinkedinUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=${linkedinSigninConstants.responseType}&client_id=${linkedinSigninConstants.clientId}&redirect_uri=${linkedinSigninConstants.redirectUri}&state=${linkedinSigninConstants.state}&scope=r_liteprofile`
+const signInWithLinkedinUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=${linkedinSigninConstants.responseType}&client_id=${linkedinSigninConstants.clientId}&redirect_uri=${linkedinSigninConstants.redirectUri}&state=${linkedinSigninConstants.state}&scope=r_liteprofile r_emailaddress`
 </script>
 
 <template>

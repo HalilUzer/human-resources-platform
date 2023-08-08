@@ -3,7 +3,7 @@
 import ColorfulLogo from '@/components/ColorfulLogo.vue';
 import { useRoute } from 'vue-router'
 import axios from 'axios';
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import router from '@/router';
 import useProfileStore from '@/stores/profileStore'
 
@@ -13,19 +13,23 @@ const profileStore = useProfileStore();
 let profileUrl: string = '';
 
 
+const alertFlag = ref<boolean>(false);
+
 async function createProfile() {
     if (route.query.code !== undefined) {
         try {
             console.log(profileStore.getUserId)
-                const response = await axios.post('http://localhost:8080/linkedin/build', {
-                    candidate_id: profileStore.getUserId,
-                    profile_url: profileUrl
-                })
+            const response = await axios.post('http://localhost:8080/linkedin/build', {
+                candidate_id: profileStore.getUserId,
+                profile_url: profileUrl
+            })
 
             await router.push('/');
         }
-        catch (e) {
-            console.log(e);
+        catch (e: any) {
+            if (e.code === 'ERR_BAD_REQUEST') {
+                alertFlag.value = true;
+            }
         }
 
     }
@@ -64,6 +68,10 @@ onMounted(async () => {
                             <input type="email" class="form-control" id="floatingInput" placeholder="Linkedin Profile URL"
                                 v-model="profileUrl">
                             <label for="floatingInput">Please enter Linkedin profile URL to proceed</label>
+                        </div>
+
+                        <div class="alert alert-danger mt-3" v-if="alertFlag" role="alert">
+                            Please enter you url!
                         </div>
                         <div class="form-floating">
                             <button type="button" class="btn btn-dark m-3" style="background-color: rgb(7, 24, 61);"

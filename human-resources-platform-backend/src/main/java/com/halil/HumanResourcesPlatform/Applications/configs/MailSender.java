@@ -1,6 +1,9 @@
 package com.halil.HumanResourcesPlatform.Applications.configs;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -11,14 +14,27 @@ import java.util.Properties;
 @Component
 public class MailSender {
 
+    @Value("${spring.mail.username}")
+    String username;
+
+    @Value("${spring.mail.password}")
+    String password;
+
+    @Value("${spring.mail.host}")
+    String host;
+
+    @Value("${spring.mail.port}")
+    int port;
+
+    Logger logger = LoggerFactory.getLogger(MailSender.class);
+
     @Bean
     public JavaMailSender getJavaMailSender(){
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");
-        mailSender.setPort(587);
-
-        mailSender.setUsername("my.gmail@gmail.com");
-        mailSender.setPassword("password");
+        mailSender.setHost(host);
+        mailSender.setPort(port);
+        mailSender.setUsername(username);
+        mailSender.setPassword(password);
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

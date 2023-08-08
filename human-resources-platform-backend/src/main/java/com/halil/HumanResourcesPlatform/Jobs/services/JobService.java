@@ -1,5 +1,6 @@
 package com.halil.HumanResourcesPlatform.Jobs.services;
 
+import com.halil.HumanResourcesPlatform.HrSpecialists.entities.HrSpecialist;
 import com.halil.HumanResourcesPlatform.HrSpecialists.repositories.HrSpecialistRepository;
 import com.halil.HumanResourcesPlatform.Jobs.dtos.CreateJobDto;
 import com.halil.HumanResourcesPlatform.Jobs.entities.Job;
@@ -30,7 +31,8 @@ public class JobService {
 
     public Job buildJobFromDto(CreateJobDto dto, UUID hrSpecialistId) {
         Job job = new Job();
-        job.setPoster(hrSpecialistRepository.findById(hrSpecialistId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hr specialist not found")));
+        HrSpecialist hrSpecialist = hrSpecialistRepository.findById(hrSpecialistId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hr specialist not found"));
+        job.setPoster(hrSpecialist);
 
         for (String technicalSkill : dto.technical_skills()) {
             job.addTechnicalSkills(new TechnicalSkill(technicalSkill));

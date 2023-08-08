@@ -26,7 +26,9 @@ const useProfileStore = defineStore('profile', () => {
   
 
   function $reset() {
-
+    profile.value.jwt = '';
+    profile.value.role = '';
+    profile.value.userId = '';
     localStorage.clear();
   }
 

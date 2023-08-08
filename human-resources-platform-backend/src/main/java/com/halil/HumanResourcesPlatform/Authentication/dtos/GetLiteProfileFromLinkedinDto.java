@@ -11,9 +11,3 @@ public record GetLiteProfileFromLinkedinDto(
         String id
 ) {
 }
-
-record ProfilePicture(
-        @NotEmpty
-        String displayImage
-) {
-}

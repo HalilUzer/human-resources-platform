@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import ProfileCard from '@/components/ProfileCard.vue';
@@ -12,6 +12,7 @@ import ProfileImage from '@/components/ProfileImage.vue';
 import ApplicationGroup from '@/components/ApplicationGroup.vue';
 import useProfileStore from '@/stores/profileStore';
 import type { Application } from '@/types/Application';
+import router from '@/router';
 
 const route = useRoute();
 const profileStore = useProfileStore();
@@ -37,8 +38,11 @@ onMounted(async () => {
         email.value = response.data.email;
         imageSource.value = response.data.imageSource;
     }
-    catch (e) {
-        console.log(e);
+    catch (e: any) {
+        if (e.code === 'NOT_FOUND' || e.code === 'ERR_BAD_REQUEST') {
+            await router.push('/404');
+        }
+        console.log(e)
     }
 
 
@@ -46,9 +50,11 @@ onMounted(async () => {
 
         try {
             const response = await axios.get(`http://localhost:8080/candidate/${route.params.candidate_id}/applications`,
-            {headers: {
-                Authorization: `Bearer ${profileStore.getJwt}`
-            }});
+                {
+                    headers: {
+                        Authorization: `Bearer ${profileStore.getJwt}`
+                    }
+                });
 
 
             applications.value = response.data.applications.map((application: any) => application.job);
