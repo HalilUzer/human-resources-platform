@@ -31,7 +31,7 @@ public class UsernamePasswordFilter extends OncePerRequestFilter {
         CachedBodyHttpServletRequest cachedBodyHttpServletRequest =
                 new CachedBodyHttpServletRequest(request);
 
-        if ("/sign-in".equals(request.getServletPath()) && HttpMethod.POST.matches(request.getMethod())) {
+        if ("/sign-in".equals(request.getServletPath())) {
             LdapHrSpecialist hrSpecialist = OBJECT_MAPPER.readValue(cachedBodyHttpServletRequest.getInputStream(), LdapHrSpecialist.class);
             try {
                 SecurityContextHolder.getContext().setAuthentication(

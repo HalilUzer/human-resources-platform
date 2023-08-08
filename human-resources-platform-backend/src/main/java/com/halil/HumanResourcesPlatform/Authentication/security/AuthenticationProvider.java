@@ -3,6 +3,7 @@ package com.halil.HumanResourcesPlatform.Authentication.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -96,8 +97,13 @@ public class AuthenticationProvider {
     public UsernamePasswordAuthenticationToken validateToken(String token, String servletPath) {
         Algorithm algorithm = Algorithm.HMAC256(privateKey);
         JWTVerifier verifier = JWT.require(algorithm).build();
-        DecodedJWT decoded = verifier.verify(token);
-        logger.info(decoded.getPayload());
+        DecodedJWT decoded;
+        try{
+            decoded = verifier.verify(token);
+        }
+        catch (JWTVerificationException exception){
+            throw  new RuntimeException();
+        }
         String role = decoded.getClaim("role").asString();
         Object user;
         if(!pathsConfig.pathAndRoleMatcher(Roles.valueOf(role), servletPath)){

@@ -7,6 +7,7 @@ import com.halil.HumanResourcesPlatform.Authentication.security.filters.JWTAuthF
 import com.halil.HumanResourcesPlatform.Authentication.security.filters.UsernamePasswordFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -41,13 +42,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(request -> {
-                    final CorsConfiguration cors = new CorsConfiguration();
-                    cors.setAllowedOrigins(List.of("*"));
-                    cors.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "HEAD", "DELETE", "OPTIONS"));
-                    cors.setAllowedHeaders(List.of("Origin", "Accept", "X-Requested-With", "Content-Type", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Authorization"));
-                    cors.setExposedHeaders(List.of("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Authorization"));
-                    return cors;
-                }
+                            final CorsConfiguration cors = new CorsConfiguration();
+                            cors.setAllowedOrigins(List.of("*"));
+                            cors.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "HEAD", "DELETE", "OPTIONS"));
+                            cors.setAllowedHeaders(List.of("Origin", "Accept", "X-Requested-With", "Content-Type", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Authorization"));
+                            cors.setExposedHeaders(List.of("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Authorization"));
+                            return cors;
+                        }
                 ))
                 .httpBasic(Customizer.withDefaults())
                 .exceptionHandling(configurer -> configurer.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
@@ -57,15 +58,15 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         (requests) ->
-                                requests.requestMatchers("/sign-in").authenticated()
-
+                                requests.requestMatchers(
+                                                "/candidate/*/applications", "/hr-specialist/*/posts", "/job", "/job/*/apply", "/job/*/status", "/job/*/applicants", "/linkedin/build", "/hr-specialist/(.*)/posts").authenticated()
+                                        .anyRequest().permitAll()
                 );
-
         return httpSecurity.build();
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource(){
+    CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
         configuration.setAllowedMethods(Arrays.asList("POST", "GET", "DELETE", "PUT"));

@@ -18,6 +18,8 @@ public interface GetCandidateApplicationsProjection {
 
         JobView getJob();
 
+        String getStatus();
+
             interface JobView {
 
                 UUID getJobId();

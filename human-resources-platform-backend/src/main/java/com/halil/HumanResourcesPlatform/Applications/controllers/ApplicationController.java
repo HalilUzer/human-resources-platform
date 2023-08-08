@@ -40,7 +40,6 @@ public class ApplicationController {
         if (!job.getPoster().getHrSpecialistId().equals(hrSpecialistId)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
-        emailService.sendSimpleMessage(application.getCandidate().getEmail(), "Change of Status", "Your application rejected ");
         application.setStatus(applicationStatusDto.status());
         applicationRepository.save(application);
     }

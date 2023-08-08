@@ -18,10 +18,14 @@ const alertFlag = ref<boolean>(false);
 async function createProfile() {
     if (route.query.code !== undefined) {
         try {
-            console.log(profileStore.getUserId)
+            console.log(`Bearer ${profileStore.getJwt}`)
             const response = await axios.post('http://localhost:8080/linkedin/build', {
                 candidate_id: profileStore.getUserId,
                 profile_url: profileUrl
+            }, {
+                headers: {
+                    Authorization: `Bearer ${profileStore.getJwt}`
+                }
             })
 
             await router.push('/');

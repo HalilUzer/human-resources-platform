@@ -148,7 +148,6 @@ public class SeleniumService {
         candidate = getAboutFromLinkedin(candidate);
         candidate = getEducationFromLinkedin(candidate);
         candidate.setImageSource(getProfilePhotoUrl());
-        candidate.setEmail(getEmail());
         return candidate;
     }
 

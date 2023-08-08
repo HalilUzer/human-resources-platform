@@ -71,8 +71,6 @@ public class AuthenticationController {
     @PostMapping("/linkedin/build")
     @ResponseStatus(HttpStatus.CREATED)
     public void buildProfile(@Valid @RequestBody LinkedinBuildProfileDto linkedinBuildProfileDto) {
-        logger.info(linkedinBuildProfileDto.candidate_id().toString());
-
         Candidate candidate = candidateRepository.findById(linkedinBuildProfileDto.candidate_id()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Candidate not found"));
         candidate.setProfileUrl(linkedinBuildProfileDto.profile_url());
         candidate = seleniumService.fillCandidateDataFromLinkedin(candidate);

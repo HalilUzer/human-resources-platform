@@ -8,6 +8,7 @@ import ProfileView from '@/views/ProfileView.vue';
 import PostAJobView from '@/views/PostAJobView.vue';
 import JobView from '@/views/JobView.vue'
 import useProfileStore from './stores/profileStore';
+import MyPostsView from './views/MyPostsView.vue';
 
 
 const router = createRouter({
@@ -54,6 +55,11 @@ const router = createRouter({
       path: '/job/:job_id',
       name: 'job',
       component: JobView
+    },
+    {
+      path: '/my-posts',
+      name: 'posts',
+      component: MyPostsView
     }
   ]
 })

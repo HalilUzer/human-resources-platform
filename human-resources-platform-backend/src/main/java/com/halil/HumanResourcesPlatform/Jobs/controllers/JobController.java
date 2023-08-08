@@ -141,13 +141,4 @@ public class JobController {
         return applicantProjection;
     }
 
-    @PostMapping("/job/{jobId}/applicant/{candidateId}")
-    public void deleteApplicant(@PathVariable UUID jobId, @PathVariable UUID candidateId, @RequestHeader(name = "Authorization") String token) {
-        token = token.split(" ")[1];
-        UUID hrSpecialistId = authenticationProvider.getId(token);
-        Job job = jobRepository.findById(jobId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job didnt found"));
-        if (!job.getPoster().getHrSpecialistId().equals(hrSpecialistId)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
-        }
-    }
 }

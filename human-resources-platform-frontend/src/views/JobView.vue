@@ -96,6 +96,7 @@ async function apply() {
 
 async function setStatus() {
     try {
+        console.log(`Bearer ${profileStore.getJwt}`);
         const response = await axios.put(`http://localhost:8080/job/${route.params.job_id}/status`, {
             until: new Date(date.value).getTime(),
             status: status.value
@@ -105,6 +106,9 @@ async function setStatus() {
             }
         });
 
+        if (job.value !== undefined) {
+            job.value.status = status.value
+        };
     }
     catch (e) {
         console.log(e);
@@ -188,6 +192,7 @@ async function changeApplicantStatus(status: ChangeStatus) {
                                 </div>
                                 <div class="mt-3"
                                     v-if="profileStore.getRole === 'HR_SPECIALIST' && profileStore.getUserId === job?.poster.hrSpecialistId">
+                                    <p>Current Status : {{ job.status.toLowerCase() }}</p>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="flexRadioDefault"
                                             id="flexRadioDefault1" @click="status = 'PASSIVE'">
@@ -209,8 +214,6 @@ async function changeApplicantStatus(status: ChangeStatus) {
                                             @click="setStatus" style="background-color: rgb(7, 24, 61)">Set Post
                                             Status</button>
                                     </div>
-
-                                    <button @click="profileStore.$reset()">Reset</button>
                                 </div>
                             </div>
 

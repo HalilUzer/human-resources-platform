@@ -38,6 +38,10 @@ async function goToProfile() {
                             v-if="!profileStore.isAuthenticated">Sign In</RouterLink>
                     </li>
                     <li class="nav-fill">
+                        <RouterLink to="/my-posts" class="nav-link text-white" role="button"
+                            v-if="profileStore.getRole === 'HR_SPECIALIST'">My Posts</RouterLink>
+                    </li>
+                    <li class="nav-fill">
                         <RouterLink to="/post-a-job" class="nav-link text-white" role="button"
                             v-if="profileStore.getRole === 'HR_SPECIALIST'">Post a Job</RouterLink>
                     </li>
