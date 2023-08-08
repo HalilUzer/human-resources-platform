@@ -32,7 +32,7 @@ services:
       - openldap-data:/var/lib/ldap
       - openldap-data:/etc/ldap/slapd.d
 
-
 volumes:
   mysql-data:
   openldap-data:
+
