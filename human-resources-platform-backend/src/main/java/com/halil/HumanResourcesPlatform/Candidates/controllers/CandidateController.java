@@ -34,14 +34,6 @@ public class CandidateController {
 
     @GetMapping("/candidate/{candidateId}/applications")
     public GetCandidateApplicationsProjection getCandidateApplications(@PathVariable UUID candidateId, @RequestHeader(name = "Authorization") String token){
-        token = token.split(" ")[1];
-        Roles role = authenticationProvider.getRole(token);
-        if(role.equals(Roles.CANDIDATE)){
-            UUID requestCandidateId = authenticationProvider.getId(token);
-            if(!requestCandidateId.equals(candidateId)){
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
-            }
-        }
         return candidateRepository.findCandidateApplicationProjectionByCandidateId(candidateId);
     }
 

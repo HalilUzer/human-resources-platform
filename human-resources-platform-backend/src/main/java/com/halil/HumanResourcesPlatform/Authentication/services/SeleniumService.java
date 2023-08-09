@@ -39,15 +39,14 @@ public class SeleniumService {
 
 
 
-    private Candidate getAboutFromLinkedin(Candidate candidate) {
+    private String getAboutFromLinkedin() {
         String data;
         try {
             data = chromeDriver.findElement(By.xpath("//*[@id='about']/../div[3]")).getText();
         } catch (NoSuchElementException e) {
             return null;
         }
-        candidate.setAbout(data);
-        return  candidate;
+        return data;
     }
 
     private Education getEducationRowFromLinkedin(int index) {
@@ -145,20 +144,20 @@ public class SeleniumService {
         chromeDriver.get(candidate.getProfileUrl());
         chromeDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
         candidate = getExperienceFromLinkedin(candidate);
-        candidate = getAboutFromLinkedin(candidate);
+        candidate.setAbout(getAboutFromLinkedin());
         candidate = getEducationFromLinkedin(candidate);
         candidate.setImageSource(getProfilePhotoUrl());
         return candidate;
     }
 
-    public String getProfilePhotoUrl(){
+
+    private String getProfilePhotoUrl(){
         WebElement img = chromeDriver.findElement(By.xpath("//section[@class='artdeco-card ember-view pv-top-card']/div[2]/div[1]/div[1]/div[1]/button/img"));
         String imgSrc = img.getAttribute("src");
-        logger.info(imgSrc);
         return imgSrc;
     }
 
-    public String getEmail(){
+    private String getEmail(){
         WebElement contactInfo = chromeDriver.findElement(By.id("top-card-text-details-contact-info"));
         contactInfo.click();
         chromeDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
@@ -169,7 +168,6 @@ public class SeleniumService {
         catch (NoSuchElementException e){
             email = null;
         }
-        logger.info(email);
         return email;
     }
 }

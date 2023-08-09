@@ -5,10 +5,12 @@ import SignInLinkedinButton from '@/components/SignInLinkedinButton.vue';
 import useProfileStore from '@/stores/profileStore';
 import axios from 'axios';
 import router from '@/router';
+import { ref } from 'vue';
 
 
 let username: string = '';
 let password: string = '';
+const errorFlag = ref<boolean>(false);
 
 const profileStore = useProfileStore();
 
@@ -36,8 +38,10 @@ async function hrSpecialistSignIn() {
         profileStore.setUserId(response.data.user_id);
         await router.push('/');
     }
-    catch (error) {
-        console.log(error);
+    catch (error: any) {
+        if (error.code === 'ERR_BAD_REQUEST') {
+            errorFlag.value = true;
+        }
     }
 
 }
@@ -58,6 +62,9 @@ async function hrSpecialistSignIn() {
                         <hr class="flex-grow-1" />
                     </div>
                     <div id="sign-in-box">
+                        <div class="alert alert-danger mt-3" v-if="errorFlag" role="alert">
+                            Invalid credentials
+                        </div>
                         <div class="form-floating mb-3">
                             <input type="email" class="form-control" id="floatingInput" placeholder="username"
                                 v-model="username">

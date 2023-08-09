@@ -56,8 +56,16 @@ onMounted(async () => {
                     }
                 });
 
+            console.log(response.data)
 
-            applications.value = response.data.applications.map((application: any) => application.job);
+            applications.value = response.data.applications.map((application: any) => {
+                return {
+                    title: application.job.title,
+                    jobId: application.job.jobId,
+                    poster: application.job.poster,
+                    status: application.status
+                }
+            });
         }
         catch (e) {
             console.log(e);

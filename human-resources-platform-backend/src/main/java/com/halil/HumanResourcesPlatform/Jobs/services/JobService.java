@@ -1,5 +1,6 @@
 package com.halil.HumanResourcesPlatform.Jobs.services;
 
+import com.halil.HumanResourcesPlatform.Applications.services.ApplicationService;
 import com.halil.HumanResourcesPlatform.HrSpecialists.entities.HrSpecialist;
 import com.halil.HumanResourcesPlatform.HrSpecialists.repositories.HrSpecialistRepository;
 import com.halil.HumanResourcesPlatform.Jobs.dtos.CreateJobDto;
@@ -23,10 +24,14 @@ public class JobService {
     private final JobRepository jobRepository;
 
 
+
+
     public JobService(HrSpecialistRepository hrSpecialistRepository,
-                      JobRepository jobRepository) {
+                      JobRepository jobRepository,
+                      ApplicationService applicationService) {
         this.hrSpecialistRepository = hrSpecialistRepository;
         this.jobRepository = jobRepository;
+
     }
 
     public Job buildJobFromDto(CreateJobDto dto, UUID hrSpecialistId) {
@@ -62,8 +67,28 @@ public class JobService {
             }
 
         }
+        jobRepository.save(job);
         return job;
+    }
 
+    public void changeJobStatus(UUID jobId, UUID hrSpecialistId, Status newStatus, Date until){
+        Job job = jobRepository.findById(jobId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job didnt found"));
+        if (!job.getPoster().getHrSpecialistId().equals(hrSpecialistId)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+        }
+        job.setStatus(newStatus);
+        job.setUntil(until);
+        jobRepository.save(job);
+    }
+
+
+    public Job createJob(CreateJobDto createJobDto, UUID hrSpecialistId){
+        Job job = this.buildJobFromDto(createJobDto, hrSpecialistId);
+        HrSpecialist hrSpecialist = hrSpecialistRepository.findById(hrSpecialistId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hr specialist not found"));
+        hrSpecialist.pushJob(job);
+        hrSpecialistRepository.save(hrSpecialist);
+        jobRepository.save(job);
+        return job;
     }
 
 

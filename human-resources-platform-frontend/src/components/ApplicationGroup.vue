@@ -15,7 +15,7 @@ const props = defineProps<{
                     <div class="list-group">
                         <ApplicationCard v-for="(application, index) in applications" :key="index"
                             :job-id="application.jobId" :poster-name="application.poster.username"
-                            :title="application.title">
+                            :title="application.title" :status="application.status">
                         </ApplicationCard>
                     </div>
                 </div>

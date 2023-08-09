@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import java.util.*;
 
 @Entity
+@Table(name = "jobs")
 public class Job {
     @Id
     @GeneratedValue

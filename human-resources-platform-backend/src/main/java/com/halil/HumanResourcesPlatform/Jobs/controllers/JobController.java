@@ -1,5 +1,6 @@
 package com.halil.HumanResourcesPlatform.Jobs.controllers;
 
+import com.halil.HumanResourcesPlatform.Applications.services.ApplicationService;
 import com.halil.HumanResourcesPlatform.Authentication.security.AuthenticationProvider;
 import com.halil.HumanResourcesPlatform.Candidates.entites.Candidate;
 import com.halil.HumanResourcesPlatform.Candidates.repositories.CandidateRepository;
@@ -32,9 +33,8 @@ public class JobController {
     private final AuthenticationProvider authenticationProvider;
     private final JobRepository jobRepository;
     private final JobService jobService;
-    private final HrSpecialistRepository hrSpecialistRepository;
     private final CandidateRepository candidateRepository;
-    private final ApplicationRepository applicationRepository;
+    private final ApplicationService applicationService;
 
 
     JobController(
@@ -42,14 +42,13 @@ public class JobController {
             JobService jobService,
             AuthenticationProvider authenticationProvider,
             CandidateRepository candidateRepository,
-            HrSpecialistRepository hrSpecialistRepository,
-            ApplicationRepository applicationRepository) {
+            ApplicationService applicationService
+            ) {
         this.jobRepository = jobRepository;
         this.jobService = jobService;
         this.authenticationProvider = authenticationProvider;
         this.candidateRepository = candidateRepository;
-        this.hrSpecialistRepository = hrSpecialistRepository;
-        this.applicationRepository = applicationRepository;
+        this.applicationService = applicationService;
     }
 
 
@@ -59,11 +58,7 @@ public class JobController {
         token = token.split(" ")[1];
         UUID hrSpecialistId;
         hrSpecialistId = authenticationProvider.getId(token);
-        Job job = jobService.buildJobFromDto(createJobDto, hrSpecialistId);
-        HrSpecialist hrSpecialist = hrSpecialistRepository.findById(hrSpecialistId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hr specialist not found"));
-        hrSpecialist.pushJob(job);
-        hrSpecialistRepository.save(hrSpecialist);
-        jobRepository.save(job);
+        Job job = jobService.createJob(createJobDto, hrSpecialistId);
         return new JobIdDto(job.getJobId());
     }
 
@@ -92,27 +87,17 @@ public class JobController {
         Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Candidate didnt found"));
         Job job = jobRepository.findById(jobId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job didnt found"));
         job = jobService.checkStatus(job);
-        jobRepository.save(job);
+
         if (job.getStatus().equals(Status.PASSIVE)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cant apply to passive job");
         }
 
-        for(Application application :job.getApplications()){
-            if(application.getCandidate().getCandidateId().equals(candidateId)){
+        for (Application application : job.getApplications()) {
+            if (application.getCandidate().getCandidateId().equals(candidateId)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Already applied");
             }
         }
-
-
-        Application application = new Application();
-        application.setCandidate(candidate);
-        application.setJob(job);
-        application.setStatus(ApplicationStatus.ON_EVALUATION);
-        job.pushApplication(application);
-        candidate.pushApplication(application);
-        applicationRepository.save(application);
-        jobRepository.save(job);
-        candidateRepository.save(candidate);
+        applicationService.createApplication(candidate,job);
     }
 
     @PutMapping("/job/{jobId}/status")
@@ -120,13 +105,7 @@ public class JobController {
     public void changeStatus(@Valid @RequestBody ChangeJobStatusDto changeJobStatusDto, @PathVariable UUID jobId, @RequestHeader(name = "Authorization") String token) {
         token = token.split(" ")[1];
         UUID hrSpecialistId = authenticationProvider.getId(token);
-        Job job = jobRepository.findById(jobId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job didnt found"));
-        if (!job.getPoster().getHrSpecialistId().equals(hrSpecialistId)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
-        }
-        job.setStatus(changeJobStatusDto.status());
-        job.setUntil(changeJobStatusDto.until());
-        jobRepository.save(job);
+        jobService.changeJobStatus(jobId, hrSpecialistId, changeJobStatusDto.status(), changeJobStatusDto.until());
     }
 
     @GetMapping("/job/{jobId}/applicants")

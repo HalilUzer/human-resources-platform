@@ -81,8 +81,8 @@ async function apply() {
             jobId: job.value?.jobId!,
             poster: {
                 username: job.value?.poster.username!
-            }
-
+            },
+            status: job.value?.status!
         })
 
     }

@@ -15,6 +15,7 @@ import com.halil.HumanResourcesPlatform.Candidates.repositories.CandidateReposit
 import com.halil.HumanResourcesPlatform.HrSpecialists.entities.HrSpecialist;
 import com.halil.HumanResourcesPlatform.HrSpecialists.repositories.HrSpecialistRepository;
 import com.halil.HumanResourcesPlatform.HrSpecialists.repositories.LdapHrSpecialist;
+import com.halil.HumanResourcesPlatform.HrSpecialists.repositories.LdapHrSpecialistRepository;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,11 +30,8 @@ import org.slf4j.Logger;
 public class AuthenticationProvider {
     @Value("$security.jwt.token.secret-key:secret-key")
     private String privateKey;
-    private final AuthenticationService authenticationService;
 
-    private final Logger logger = LoggerFactory.getLogger(AuthenticationProvider.class);
-
-    private final ObjectMapper objectMapper;
+    private final LdapHrSpecialistRepository ldapHrSpecialistRepository;
 
     private final HrSpecialistRepository hrSpecialistRepository;
 
@@ -41,16 +39,17 @@ public class AuthenticationProvider {
 
     private final CandidateRepository candidateRepository;
 
-    public AuthenticationProvider(AuthenticationService authenticationService,
+    public AuthenticationProvider(
                                   PathsConfig pathsConfig,
                                   ObjectMapper objectMapper,
                                   HrSpecialistRepository hrSpecialistRepository,
-                                  CandidateRepository candidateRepository) {
-        this.authenticationService = authenticationService;
+                                  CandidateRepository candidateRepository,
+                                  LdapHrSpecialistRepository ldapHrSpecialistRepository) {
+
         this.pathsConfig = pathsConfig;
-        this.objectMapper = objectMapper;
         this.hrSpecialistRepository = hrSpecialistRepository;
         this.candidateRepository = candidateRepository;
+        this.ldapHrSpecialistRepository = ldapHrSpecialistRepository;
 
 
     }
@@ -130,7 +129,13 @@ public class AuthenticationProvider {
     }
 
     public UsernamePasswordAuthenticationToken validateCredentials(LdapHrSpecialist hrSpecialist) {
-        LdapHrSpecialist hrSpecialistAuth = authenticationService.validateCredentials(hrSpecialist);
+        LdapHrSpecialist hrSpecialistAuth;
+        if (this.ldapHrSpecialistRepository.validateCredentials(hrSpecialist)) {
+            hrSpecialistAuth = hrSpecialist;
+        }
+        else{
+            throw new RuntimeException("Invalid Password");
+        }
         return new UsernamePasswordAuthenticationToken(hrSpecialistAuth, null, Collections.emptyList());
     }
 

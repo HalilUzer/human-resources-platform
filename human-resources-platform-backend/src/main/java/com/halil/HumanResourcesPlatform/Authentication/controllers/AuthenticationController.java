@@ -4,6 +4,7 @@ import com.halil.HumanResourcesPlatform.Authentication.configs.Roles;
 import com.halil.HumanResourcesPlatform.Authentication.dtos.*;
 import com.halil.HumanResourcesPlatform.Authentication.dtos.GetEmailFromLinkedin.GetEmailFromLinkedinDto;
 import com.halil.HumanResourcesPlatform.Authentication.security.AuthenticationProvider;
+import com.halil.HumanResourcesPlatform.Authentication.services.AuthenticationService;
 import com.halil.HumanResourcesPlatform.Authentication.services.LinkedinOauthService;
 import com.halil.HumanResourcesPlatform.Authentication.services.SeleniumService;
 import com.halil.HumanResourcesPlatform.Candidates.entites.Candidate;
@@ -25,7 +26,9 @@ public class AuthenticationController {
     private final LinkedinOauthService linkedinOauthService;
     private final CandidateRepository candidateRepository;
     private final HrSpecialistRepository hrSpecialistRepository;
-    private final SeleniumService seleniumService;
+
+    private final AuthenticationService authenticationService;
+
 
     private final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
@@ -33,13 +36,13 @@ public class AuthenticationController {
                              CandidateRepository candidateRepository,
                              HrSpecialistRepository hrSpecialistRepository,
                              LinkedinOauthService linkedinOauthService,
-                             SeleniumService seleniumService
+                             AuthenticationService authenticationService
     ) {
         this.authenticationProvider = authenticationProvider;
         this.candidateRepository = candidateRepository;
         this.hrSpecialistRepository = hrSpecialistRepository;
         this.linkedinOauthService = linkedinOauthService;
-        this.seleniumService = seleniumService;
+        this.authenticationService = authenticationService;
     }
 
     @PostMapping("/sign-in")
@@ -52,20 +55,7 @@ public class AuthenticationController {
     @PostMapping("/linkedin/sign-in")
     @ResponseStatus(HttpStatus.CREATED)
     public JwtDtoWithMessage linkedinSignIn(@Valid @RequestBody LinkedinSignInDto linkedinSignInDto) {
-        String accessToken = linkedinOauthService.getAccessTokenFromLinkedin(linkedinSignInDto.code());
-        Candidate candidate = linkedinOauthService.createCandidateFromLinkedinOauth(accessToken);
-
-        String message;
-        if (candidateRepository.existsCandidateByLinkedinId(candidate.getLinkedinId())) {
-            candidate = candidateRepository.findCandidateByLinkedinId(candidate.getLinkedinId());
-            message = "Exists";
-        } else {
-            candidateRepository.save(candidate);
-            message = "Created";
-        }
-
-        String jwt = authenticationProvider.createToken(candidate.getCandidateId(), Roles.CANDIDATE);
-        return new JwtDtoWithMessage(jwt, Roles.CANDIDATE.toString(), candidate.getCandidateId(), message);
+        return authenticationService.signInWithLinkedin(linkedinSignInDto.code());
     }
 
     @PostMapping("/linkedin/build")
@@ -73,7 +63,6 @@ public class AuthenticationController {
     public void buildProfile(@Valid @RequestBody LinkedinBuildProfileDto linkedinBuildProfileDto) {
         Candidate candidate = candidateRepository.findById(linkedinBuildProfileDto.candidate_id()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Candidate not found"));
         candidate.setProfileUrl(linkedinBuildProfileDto.profile_url());
-        candidate = seleniumService.fillCandidateDataFromLinkedin(candidate);
-        candidateRepository.save(candidate);
+        this.authenticationService.buildCandidateFromLinkedin(candidate);;
     }
 }
