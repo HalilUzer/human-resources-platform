@@ -142,7 +142,7 @@ public class SeleniumService {
 
     public Candidate fillCandidateDataFromLinkedin(Candidate candidate) {
         chromeDriver.get(candidate.getProfileUrl());
-        chromeDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
+        chromeDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
         candidate = getExperienceFromLinkedin(candidate);
         candidate.setAbout(getAboutFromLinkedin());
         candidate = getEducationFromLinkedin(candidate);
