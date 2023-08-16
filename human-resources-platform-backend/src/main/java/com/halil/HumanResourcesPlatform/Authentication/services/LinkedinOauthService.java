@@ -21,9 +21,6 @@ public class LinkedinOauthService {
 
     private final LinkedinOauthConfigProperties oauthConfigProperties;
 
-    private final SeleniumService seleniumService;
-
-    private final CandidateRepository candidateRepository;
 
     private final Logger logger = LoggerFactory.getLogger(LinkedinOauthService.class);
 
@@ -31,8 +28,6 @@ public class LinkedinOauthService {
                                 SeleniumService seleniumService,
                                 CandidateRepository candidateRepository) {
         this.oauthConfigProperties = oauthConfigProperties;
-        this.seleniumService = seleniumService;
-        this.candidateRepository = candidateRepository;
     }
 
     public String getAccessTokenFromLinkedin(String code) {

@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface JobRepository extends JpaRepository<Job, UUID> {
-    public ApplicantProjection getApplicantsByJobId(UUID jobId);
+    public Optional<ApplicantProjection> getApplicantsByJobId(UUID jobId);
     public List<JobsProjection> getJobsByStatus(Status status);
 
     public Optional<Job> getJobByJobId(UUID jobId);

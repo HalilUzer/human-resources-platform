@@ -9,6 +9,7 @@ import type { Job } from '@/types/Job';
 import { ref } from 'vue';
 import type { JobLite } from '@/types/JobLite';
 
+
 const route = useRoute();
 
 const jobs = ref<JobLite[]>([]);
@@ -19,6 +20,8 @@ const jobs = ref<JobLite[]>([]);
 onMounted(async () => {
   const response = await axios.get('http://localhost:8080/jobs')
   jobs.value = response.data;
+
+  console.log(response);
 })
 </script>
 

@@ -17,22 +17,12 @@ const profileStore = useProfileStore();
 
 
 async function hrSpecialistSignIn() {
-    let data = JSON.stringify({
-        username,
-        password
-    });
 
-    let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: 'http://127.0.0.1:8080/sign-in',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: data
-    };
     try {
-        const response = await axios.request(config);
+        const response = await axios.post('http://localhost:8080/sign-in', {
+            username,
+            password
+        });
         profileStore.setJwt(response.data.token);
         profileStore.setRole(response.data.role);
         profileStore.setUserId(response.data.user_id);
@@ -42,6 +32,7 @@ async function hrSpecialistSignIn() {
         if (error.code === 'ERR_BAD_REQUEST') {
             errorFlag.value = true;
         }
+        console.log(error);
     }
 
 }

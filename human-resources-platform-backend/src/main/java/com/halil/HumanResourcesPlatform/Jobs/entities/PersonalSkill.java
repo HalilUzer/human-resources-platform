@@ -36,7 +36,6 @@ public class PersonalSkill {
     public void setJob(Job job) {
         this.job = job;
     }
-
     public String getPersonalSkill() {
         return personalSkill;
     }

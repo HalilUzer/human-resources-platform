@@ -16,12 +16,10 @@ import java.io.IOException;
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        OBJECT_MAPPER.writeValue(response.getOutputStream(), new ErrorDto("Authentication failed"));
+        OBJECT_MAPPER.writeValue(response.getOutputStream(), new ErrorDto("Unauthorized"));
     }
-
 }

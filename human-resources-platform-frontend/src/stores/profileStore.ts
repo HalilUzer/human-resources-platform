@@ -49,7 +49,7 @@ const useProfileStore = defineStore('profile', () => {
     profile.value.role = value;
   }
 
-  function checkExpiration(): boolean {
+  const isExpired = computed(() => {
     const decoded: any = jwtDecode(profile.value.jwt);
     if (Date.now() >= decoded.exp * 1000) {
       return true;
@@ -57,9 +57,9 @@ const useProfileStore = defineStore('profile', () => {
     else {
       return false;
     }
-  }
+  })
 
-  return { getJwt, setJwt, getRole, setRole, $reset, checkExpiration, isAuthenticated, getUserId, setUserId }
+  return { getJwt, setJwt, getRole, setRole, $reset, isExpired, isAuthenticated, getUserId, setUserId }
 })
 
 

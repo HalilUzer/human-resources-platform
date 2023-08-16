@@ -3,7 +3,6 @@ import axios from 'axios';
 import { onMounted, ref } from 'vue';
 import useProfileStore from '@/stores/profileStore';
 import type { JobLite } from '@/types/JobLite';
-import router from '@/router';
 import NavBar from '@/components/NavBar.vue';
 import JobCardGroup from '@/components/JobCardGroup.vue';
 
@@ -16,7 +15,7 @@ const jobsLite = ref<JobLite[]>([]);
 
 onMounted(async () => {
     try {
-        const response = await axios.get(`http://localhost:8080/hr-specialist/${profileStore.getUserId}/posts`,
+        const response = await axios.get(`http://localhost:8080/jobs/${profileStore.getUserId}`,
             {
                 headers: {
                     Authorization: `Bearer ${profileStore.getJwt}`

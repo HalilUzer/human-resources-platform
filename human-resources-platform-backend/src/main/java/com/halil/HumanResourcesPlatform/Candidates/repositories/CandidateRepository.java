@@ -15,6 +15,6 @@ public interface CandidateRepository extends JpaRepository<Candidate, UUID> {
 
     public Optional<GetCandidateProfileProjection> findProfileByCandidateId(UUID candidateId);
 
-    public GetCandidateApplicationsProjection findCandidateApplicationProjectionByCandidateId(UUID candidateId);
+    public Optional<GetCandidateApplicationsProjection> findCandidateApplicationProjectionByCandidateId(UUID candidateId);
 
 }

@@ -7,6 +7,8 @@ import com.halil.HumanResourcesPlatform.Candidates.entites.Candidate;
 import com.halil.HumanResourcesPlatform.Candidates.repositories.CandidateRepository;
 import com.halil.HumanResourcesPlatform.HrSpecialists.repositories.LdapHrSpecialist;
 import com.halil.HumanResourcesPlatform.HrSpecialists.repositories.LdapHrSpecialistRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +23,8 @@ public class AuthenticationService {
     private final CandidateRepository candidateRepository;
 
     private final AuthenticationProvider authenticationProvider;
+
+    private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
     public AuthenticationService(LdapHrSpecialistRepository ldapHrSpecialistRepository,
                                  SeleniumService seleniumService,
@@ -45,9 +49,10 @@ public class AuthenticationService {
         throw new RuntimeException("Invalid Username");
     }
 
-    public void buildCandidateFromLinkedin(Candidate candidate) {
+    public void saveCandidateFromLinkedin(Candidate candidate) {
         this.seleniumService.fillCandidateDataFromLinkedin(candidate);
         this.candidateRepository.save(candidate);
+        logger.info("Candidate: " +  candidate.getCandidateId().toString() + " linkedin profile scraped");
     }
 
     public JwtDtoWithMessage signInWithLinkedin(String code) {
@@ -67,6 +72,5 @@ public class AuthenticationService {
 
         return new JwtDtoWithMessage(jwt, Roles.CANDIDATE.toString(), candidate.getCandidateId(), message);
     }
-
 
 }

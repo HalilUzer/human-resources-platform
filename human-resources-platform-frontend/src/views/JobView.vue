@@ -71,7 +71,7 @@ async function apply() {
         await router.push('/sign-in')
     }
     try {
-        const response = await axios.put(`http://localhost:8080/job/${route.params.job_id}/apply`, null, {
+        const response = await axios.post(`http://localhost:8080/application`, null, {
             headers: {
                 Authorization: `Bearer ${profileStore.getJwt}`
             }
@@ -96,7 +96,6 @@ async function apply() {
 
 async function setStatus() {
     try {
-        console.log(`Bearer ${profileStore.getJwt}`);
         const response = await axios.put(`http://localhost:8080/job/${route.params.job_id}/status`, {
             until: new Date(date.value).getTime(),
             status: status.value

@@ -94,10 +94,12 @@ public class Candidate {
 
     public void pushExperience(Experience experience) {
         this.experiences.add(experience);
+        experience.setCandidate(this);
     }
 
     public void pushEducation(Education education) {
         this.educations.add(education);
+        education.setCandidate(this);
     }
 
     public void setHeadline(String headline) {
@@ -139,6 +141,7 @@ public class Candidate {
 
     public void pushApplication(Application application){
         this.applications.add(application);
+        application.setCandidate(this);
     }
 
 }

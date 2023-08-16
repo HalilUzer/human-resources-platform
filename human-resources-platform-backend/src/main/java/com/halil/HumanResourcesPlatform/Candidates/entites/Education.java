@@ -58,5 +58,6 @@ public class Education {
 
     public void setCandidate(Candidate candidate) {
         this.candidate = candidate;
+        candidate.pushEducation(this);
     }
 }

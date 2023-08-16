@@ -109,6 +109,7 @@ public class Job {
 
     public void pushApplication(Application application){
         this.applications.add(application);
+        application.setJob(this);
     }
 
 

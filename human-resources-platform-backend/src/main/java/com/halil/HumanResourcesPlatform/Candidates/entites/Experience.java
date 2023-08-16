@@ -36,6 +36,7 @@ public class Experience {
 
     public void setCandidate(Candidate candidate) {
         this.candidate = candidate;
+        candidate.pushExperience(this);
     }
 
     public String getTitle() {
