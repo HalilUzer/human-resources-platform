@@ -4,13 +4,17 @@ package com.halil.HumanResourcesPlatform.Jobs.entities;
 import com.halil.HumanResourcesPlatform.Applications.entities.Application;
 import com.halil.HumanResourcesPlatform.HrSpecialists.entities.HrSpecialist;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
 
+import org.hibernate.type.SqlTypes;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
 @Table(name = "jobs")
 public class Job {
     @Id
+    @JdbcTypeCode(SqlTypes.CHAR)
     @GeneratedValue
     private UUID jobId;
     @ManyToOne
@@ -23,13 +27,18 @@ public class Job {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "job")
     private List<Application>  applications;
 
+
+    private boolean isPermanent;
     private String title;
-    private Date until;
+    private LocalDateTime until;
+
+
     private Status status;
     @Column(columnDefinition = "LONGTEXT")
     private String jobDescription;
 
-    public Job(HrSpecialist poster, List<TechnicalSkill> technicalSkills, List<PersonalSkill> personalSkills, String title, Date until, Status status, String jobDescription) {
+    public Job(HrSpecialist poster, List<TechnicalSkill> technicalSkills, List<PersonalSkill> personalSkills,
+               String title, LocalDateTime until, Status status, String jobDescription, boolean isPermanent) {
         this.poster = poster;
         this.technicalSkills = technicalSkills;
         this.personalSkills = personalSkills;
@@ -37,6 +46,7 @@ public class Job {
         this.until = until;
         this.status = status;
         this.jobDescription = jobDescription;
+        this.isPermanent = isPermanent;
     }
 
     public Job() {
@@ -67,12 +77,10 @@ public class Job {
     }
 
     public void addTechnicalSkills(TechnicalSkill technicalSkill) {
-        technicalSkill.setJob(this);
         this.technicalSkills.add(technicalSkill);
     }
 
     public void addPersonalSkill(PersonalSkill personalSkill) {
-        personalSkill.setJob(this);
         this.personalSkills.add(personalSkill);
     }
 
@@ -88,10 +96,10 @@ public class Job {
     public void setTitle(String title) {
         this.title = title;
     }
-    public Date getUntil() {
+    public LocalDateTime getUntil() {
         return until;
     }
-    public void setUntil(Date set) {
+    public void setUntil(LocalDateTime set) {
         this.until = set;
     }
     public Status getStatus() {
@@ -109,7 +117,14 @@ public class Job {
 
     public void pushApplication(Application application){
         this.applications.add(application);
-        application.setJob(this);
+    }
+
+    public void setPermanent(boolean permanent) {
+        isPermanent = permanent;
+    }
+
+    public boolean isPermanent() {
+        return isPermanent;
     }
 
 

@@ -4,6 +4,8 @@ package com.halil.HumanResourcesPlatform.Candidates.entites;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.halil.HumanResourcesPlatform.Applications.entities.Application;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,7 @@ public class Candidate {
 
     @Id
     @GeneratedValue
+    @JdbcTypeCode(SqlTypes.CHAR)
     private UUID candidateId;
     @Column(unique = true)
     @JsonIgnore
@@ -34,6 +37,8 @@ public class Candidate {
     private String profileUrl;
     private String email;
     private String imageSource;
+
+    private boolean isBlackListed;
 
 
     public Candidate() {
@@ -94,12 +99,10 @@ public class Candidate {
 
     public void pushExperience(Experience experience) {
         this.experiences.add(experience);
-        experience.setCandidate(this);
     }
 
     public void pushEducation(Education education) {
         this.educations.add(education);
-        education.setCandidate(this);
     }
 
     public void setHeadline(String headline) {
@@ -141,7 +144,22 @@ public class Candidate {
 
     public void pushApplication(Application application){
         this.applications.add(application);
-        application.setCandidate(this);
     }
 
+
+    public List<Application> getApplications() {
+        return applications;
+    }
+
+    public void setApplications(List<Application> applications) {
+        this.applications = applications;
+    }
+
+    public boolean isBlackListed() {
+        return isBlackListed;
+    }
+
+    public void setBlackListed(boolean blackListed) {
+        isBlackListed = blackListed;
+    }
 }

@@ -60,7 +60,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         (requests) ->
                                 requests.requestMatchers(
-                                                "/candidate/*/applications", "/hr-specialist/*/posts", "/job", "/job/*/apply", "/job/*/status", "/job/*/applicants", "/linkedin/build", "/hr-specialist/(.*)/posts").authenticated()
+                                                "/candidate/*/applications", "/hr-specialist/*/posts", "/job", "/job/*/apply", "/job/*/status", "/job/*/applicants", "/linkedin/build", "/hr-specialist/*/posts", "/candidate/*/black-list").authenticated()
                                         .anyRequest().permitAll()
                 );
 

@@ -2,6 +2,8 @@ package com.halil.HumanResourcesPlatform.Candidates.entites;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.UUID;
 
@@ -11,6 +13,7 @@ public class Experience {
     @Id
     @GeneratedValue
     @JsonIgnore
+    @JdbcTypeCode(SqlTypes.CHAR)
     UUID experienceId;
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -36,7 +39,6 @@ public class Experience {
 
     public void setCandidate(Candidate candidate) {
         this.candidate = candidate;
-        candidate.pushExperience(this);
     }
 
     public String getTitle() {

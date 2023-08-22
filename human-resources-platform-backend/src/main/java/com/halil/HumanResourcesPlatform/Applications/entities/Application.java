@@ -4,6 +4,8 @@ package com.halil.HumanResourcesPlatform.Applications.entities;
 import com.halil.HumanResourcesPlatform.Candidates.entites.Candidate;
 import com.halil.HumanResourcesPlatform.Jobs.entities.Job;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 
 import java.util.UUID;
@@ -13,6 +15,7 @@ import java.util.UUID;
 public class Application {
     @Id
     @GeneratedValue
+    @JdbcTypeCode(SqlTypes.CHAR)
     private UUID applicationId;
 
     @ManyToOne

@@ -23,7 +23,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,7 +62,9 @@ public class JobController {
     @ResponseStatus(HttpStatus.CREATED)
     public JobIdDto createJob(@Valid @RequestBody CreateJobDto createJobDto, @RequestHeader(name = "Authorization") String token) {
         UUID hrSpecialistId = authenticationProvider.getId(token);
-        Job job = jobService.createJob(createJobDto, hrSpecialistId);
+        LocalDateTime until = jobService.parseToLocalDateTime(createJobDto.until(), createJobDto.is_permanent());
+        Job job = jobService.saveJob(hrSpecialistId, createJobDto.title(), createJobDto.job_description(),
+                createJobDto.status(), until, createJobDto.technical_skills(), createJobDto.personal_skills(), createJobDto.is_permanent());
         return new JobIdDto(job.getJobId());
     }
 
@@ -80,19 +83,24 @@ public class JobController {
     @GetMapping("/job/{jobId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public JobProjection getJob(@PathVariable UUID jobId) {
-        return jobService.getJob(jobId);
+        jobService.getJob(jobId);
+        return jobService.getJobProjection(jobId);
     }
 
     @Operation(summary = "Change job status")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Job didnt found",
                     content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")})
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "400", description = "Datetime not after 1 hour from current time"),
+            @ApiResponse(responseCode = "400", description = "Invalid date time")})
     @PutMapping("/job/{jobId}/status")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void changeStatus(@Valid @RequestBody ChangeJobStatusDto changeJobStatusDto, @PathVariable UUID jobId, @RequestHeader(name = "Authorization") String token) {
+    public void changeStatus(@Valid @RequestBody ChangeJobStatusDto changeJobStatusDto, @PathVariable UUID jobId,
+                             @RequestHeader(name = "Authorization") String token) {
         UUID hrSpecialistId = authenticationProvider.getId(token);
-        jobService.changeJobStatus(jobId, hrSpecialistId, changeJobStatusDto.status(), changeJobStatusDto.until());
+        jobService.changeJobStatus(jobId, hrSpecialistId, changeJobStatusDto.status(), changeJobStatusDto.until(),
+                changeJobStatusDto.is_permanent());
     }
 
     @Operation(summary = "Get applicants of a job")
@@ -101,12 +109,17 @@ public class JobController {
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "Unauthorized")})
     @GetMapping("/job/{jobId}/applicants")
-    public ApplicantProjection getApplicants(@PathVariable UUID jobId, @RequestHeader(name = "Authorization") String token) {
+    public ApplicantProjection getApplicants(@PathVariable UUID jobId,
+                                             @RequestHeader(name = "Authorization") String token) {
         UUID hrSpecialistId = authenticationProvider.getId(token);
-        Job job = jobRepository.findById(jobId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job didnt found"));
+        Job job = jobRepository.findById(jobId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Job didnt found"));
         if (!job.getPoster().getHrSpecialistId().equals(hrSpecialistId)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
+
+        Date date = new Date();
+
         return jobService.getApplicantsByJobId(jobId);
     }
 
@@ -117,7 +130,8 @@ public class JobController {
             @ApiResponse(responseCode = "401", description = "Unauthorized")})
     @GetMapping("/jobs/{hrSpecialistId}")
     public PostedJobsProjectory getPosts(@PathVariable UUID hrSpecialistId) {
-        this.hrSpecialistRepository.findById(hrSpecialistId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hr specialist not found"));
+        this.hrSpecialistRepository.findById(hrSpecialistId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Hr specialist not found"));
         PostedJobsProjectory postedJobs = this.hrSpecialistRepository.findJobsByHrSpecialistId(hrSpecialistId);
         return postedJobs;
     }

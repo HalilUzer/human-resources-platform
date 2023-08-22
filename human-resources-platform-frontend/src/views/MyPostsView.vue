@@ -15,7 +15,7 @@ const jobsLite = ref<JobLite[]>([]);
 
 onMounted(async () => {
     try {
-        const response = await axios.get(`http://localhost:8080/jobs/${profileStore.getUserId}`,
+        const response = await axios.get(`${import.meta.env.VITE_URL}/jobs/${profileStore.getUserId}`,
             {
                 headers: {
                     Authorization: `Bearer ${profileStore.getJwt}`
@@ -25,10 +25,12 @@ onMounted(async () => {
          jobsLite.value = response.data.postedJobs.map((postedJob : any) => {return { 
             title: postedJob.title,
             poster : {
-                username: postedJob.username
+                username: response.data.username
             },
             jobId: postedJob.jobId
          }});
+
+         console.log(response.data);
     }
     catch (e: any) {
         console.log(e);

@@ -6,6 +6,7 @@ import useProfileStore from '@/stores/profileStore';
 import axios from 'axios';
 import router from '@/router';
 import { ref } from 'vue';
+import AlertMessage from '@/components/AlertMessage.vue';
 
 
 let username: string = '';
@@ -17,9 +18,9 @@ const profileStore = useProfileStore();
 
 
 async function hrSpecialistSignIn() {
-
+    errorFlag.value = false;
     try {
-        const response = await axios.post('http://localhost:8080/sign-in', {
+        const response = await axios.post(`${import.meta.env.VITE_URL}/sign-in`, {
             username,
             password
         });
@@ -53,9 +54,7 @@ async function hrSpecialistSignIn() {
                         <hr class="flex-grow-1" />
                     </div>
                     <div id="sign-in-box">
-                        <div class="alert alert-danger mt-3" v-if="errorFlag" role="alert">
-                            Invalid credentials
-                        </div>
+                        <AlertMessage :message="'Invalid credentials'" v-if="errorFlag"></AlertMessage>
                         <div class="form-floating mb-3">
                             <input type="email" class="form-control" id="floatingInput" placeholder="username"
                                 v-model="username">

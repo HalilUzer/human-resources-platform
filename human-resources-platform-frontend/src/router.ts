@@ -7,7 +7,6 @@ import NotFoundView from '@/views/NotFoundView.vue';
 import ProfileView from '@/views/ProfileView.vue';
 import PostAJobView from '@/views/PostAJobView.vue';
 import JobView from '@/views/JobView.vue'
-import useProfileStore from './stores/profileStore';
 import MyPostsView from './views/MyPostsView.vue';
 
 
@@ -31,8 +30,8 @@ const router = createRouter({
     },
 
     {
-      path:'/unauthorized',
-      name:'unauthorized',
+      path: '/unauthorized',
+      name: 'unauthorized',
       component: UnauthorizedView
     },
 
@@ -47,7 +46,7 @@ const router = createRouter({
       component: ProfileView
     },
     {
-      path:'/post-a-job',
+      path: '/post-a-job',
       name: 'postAJob',
       component: PostAJobView,
     },
@@ -60,7 +59,10 @@ const router = createRouter({
       path: '/my-posts',
       name: 'posts',
       component: MyPostsView
-    }
+    },
+    {
+      path: '/:catchAll(.*)', redirect:'404'
+  }
   ]
 })
 

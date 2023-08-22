@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import ProfileCard from '@/components/ProfileCard.vue';
@@ -24,12 +24,13 @@ const imageSource = ref('');
 const applications = ref<Application[]>([])
 const experiences = ref<Experience[]>([])
 const educations = ref<Education[]>([])
+const isBlackListed = ref(false);
 
 
 
 onMounted(async () => {
     try {
-        const response = await axios.get(`http://localhost:8080/candidate/${route.params.candidate_id}`)
+        const response = await axios.get(`${import.meta.env.VITE_URL}/candidate/${route.params.candidate_id}`)
         experiences.value = response.data.experiences;
         educations.value = response.data.educations;
         name.value = response.data.name;
@@ -49,14 +50,12 @@ onMounted(async () => {
     if (profileStore.getRole === 'HR_SPECIALIST' || (profileStore.getUserId === route.params.candidate_id && profileStore.getRole === 'CANDIDATE')) {
 
         try {
-            const response = await axios.get(`http://localhost:8080/candidate/${route.params.candidate_id}/applications`,
+            const response = await axios.get(`${import.meta.env.VITE_URL}/candidate/${route.params.candidate_id}/applications`,
                 {
                     headers: {
                         Authorization: `Bearer ${profileStore.getJwt}`
                     }
                 });
-
-            console.log(response.data)
 
             applications.value = response.data.applications.map((application: any) => {
                 return {
@@ -71,8 +70,43 @@ onMounted(async () => {
             console.log(e);
         }
 
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_URL}/candidate/${route.params.candidate_id}/black-list`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${profileStore.getJwt}`
+                    }
+                });
+
+            console.log(response.data);
+
+            profileStore.setBlackListed(response.data.isBlackListed);
+            isBlackListed.value = response.data.isBlackListed;
+        }
+        catch (e) {
+            console.log(e);
+        }
+
     }
 });
+
+
+async function blackListCandidate() {
+    try {
+        const response = await axios.put(`${import.meta.env.VITE_URL}/candidate/${route.params.candidate_id}/black-list`, null, {
+            headers: {
+                Authorization: `Bearer ${profileStore.getJwt}`
+            }
+        });
+        if (response.status === 202) {
+            profileStore.setBlackListed(true);
+            isBlackListed.value = true;
+        }
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
 
 </script>
 
@@ -80,11 +114,18 @@ onMounted(async () => {
 <template>
     <NavBar></NavBar>
     <div class="container">
-
         <div class="text-center m-3">
             <ProfileImage :image-source="imageSource" :name="name" :surname="surname"></ProfileImage>
         </div>
+        <div class="mt-3 mb-3 text-center">
+            <button type="button" class="justify-content-center btn btn-danger"
+                v-if="profileStore.getRole === 'HR_SPECIALIST' && !isBlackListed" @click="blackListCandidate">Black
+                List</button>
+                <p style="color: red;" v-if="((profileStore.getRole === 'CANDIDATE' && profileStore.getUserId === route.params.candidate_id) || profileStore.getRole === 'HR_SPECIALIST') && isBlackListed">Black listed</p>
+            <p></p>
+        </div>
         <div class="mt-3 mb-3">
+
             <ProfileCard :about="about" :firt-name="name" :last-name="surname" :email="email"></ProfileCard>
         </div>
         <div class="text-center m-2">
@@ -99,8 +140,6 @@ onMounted(async () => {
             <h3>Applications</h3>
         </div>
         <ApplicationGroup :applications="applications"></ApplicationGroup>
-
-
     </div>
     <div class="row align-content-center">
         <div class="mt-4 mb-4">

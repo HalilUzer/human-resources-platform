@@ -18,8 +18,7 @@ const alertFlag = ref<boolean>(false);
 async function createProfile() {
     if (route.query.code !== undefined) {
         try {
-            console.log(`Bearer ${profileStore.getJwt}`)
-            const response = await axios.post('http://localhost:8080/linkedin/build', {
+            const response = await axios.post(`${import.meta.env.VITE_URL}/linkedin/build`, {
                 candidate_id: profileStore.getUserId,
                 profile_url: profileUrl
             }, {
@@ -42,10 +41,16 @@ async function createProfile() {
 
 onMounted(async () => {
     if (route.query.code === null) {
-        await router.push('/unauthorized')
+        await router.push('/unauthorized');
+        return;
     }
 
-    const signInResponse = await axios.post('http://localhost:8080/linkedin/sign-in', {
+    if(route.query.error){
+        await router.push('/');
+        return;
+    }
+
+    const signInResponse = await axios.post(`${import.meta.env.VITE_URL}/linkedin/sign-in`, {
         state: 'foobar',
         code: route.query.code,
         profile_url: profileUrl
@@ -54,6 +59,7 @@ onMounted(async () => {
     profileStore.setJwt(signInResponse.data.token);
     profileStore.setRole(signInResponse.data.role);
     profileStore.setUserId(signInResponse.data.user_id);
+    profileStore.setBlackListed(signInResponse.data.is_black_listed);
     if (signInResponse.data.message === 'Exists') {
         await router.push('/');
     }

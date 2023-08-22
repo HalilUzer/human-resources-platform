@@ -17,7 +17,9 @@ public record CreateJobDto (
         @NotNull
         Status status,
         @NotNull
-        Date until,
+        String until,
         List<String> technical_skills,
-        List<String> personal_skills
+        List<String> personal_skills,
+
+        boolean is_permanent
 ){}

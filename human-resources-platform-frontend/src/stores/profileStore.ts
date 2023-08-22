@@ -9,6 +9,7 @@ const useProfileStore = defineStore('profile', () => {
     jwt: '',
     role: '',
     userId: '',
+    blackListed: false
   }))
 
   const isAuthenticated = computed(() => {
@@ -59,7 +60,20 @@ const useProfileStore = defineStore('profile', () => {
     }
   })
 
-  return { getJwt, setJwt, getRole, setRole, $reset, isExpired, isAuthenticated, getUserId, setUserId }
+  const isBlackListed = computed(() => {
+    if(profile.value.role === 'CANDIDATE'){
+      return profile.value.blackListed;
+    }
+    else{
+      return false;
+    }
+  })
+
+  function setBlackListed(value: boolean){
+    profile.value.blackListed = value;
+  }
+
+  return { getJwt, setJwt, getRole, setRole, $reset, isExpired, isAuthenticated, getUserId, setUserId, isBlackListed, setBlackListed }
 })
 
 

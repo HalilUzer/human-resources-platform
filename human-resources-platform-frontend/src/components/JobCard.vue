@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import type { JobLite } from '@/types/JobLite';
+import { onMounted } from 'vue';
 
 const props = defineProps<{
     job: JobLite

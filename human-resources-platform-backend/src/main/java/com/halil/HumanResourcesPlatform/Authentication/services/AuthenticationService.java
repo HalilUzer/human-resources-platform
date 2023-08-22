@@ -70,7 +70,7 @@ public class AuthenticationService {
 
         String jwt = authenticationProvider.createToken(candidate.getCandidateId(), Roles.CANDIDATE);
 
-        return new JwtDtoWithMessage(jwt, Roles.CANDIDATE.toString(), candidate.getCandidateId(), message);
+        return new JwtDtoWithMessage(jwt, Roles.CANDIDATE.toString(), candidate.getCandidateId(), candidate.isBlackListed(), message);
     }
 
 }

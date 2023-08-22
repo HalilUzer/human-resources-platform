@@ -60,6 +60,7 @@ public class LinkedinOauthService {
         candidate.setName(getLiteProfileFromLinkedinDto.localizedFirstName());
         candidate.setSurname(getLiteProfileFromLinkedinDto.localizedLastName());
         candidate.setEmail(getEmailFromLinkedinDto.elements().get(0).handler().emailAddress());
+        candidate.setBlackListed(false);
         return candidate;
     }
 

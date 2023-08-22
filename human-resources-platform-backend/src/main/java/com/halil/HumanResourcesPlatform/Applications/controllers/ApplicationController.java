@@ -2,6 +2,7 @@ package com.halil.HumanResourcesPlatform.Applications.controllers;
 
 
 import com.halil.HumanResourcesPlatform.Applications.dtos.ChangeApplicationStatusDto;
+import com.halil.HumanResourcesPlatform.Applications.dtos.CreateApplicationDto;
 import com.halil.HumanResourcesPlatform.Applications.entities.Application;
 import com.halil.HumanResourcesPlatform.Applications.repositories.ApplicationRepository;
 import com.halil.HumanResourcesPlatform.Applications.services.ApplicationService;
@@ -10,8 +11,6 @@ import com.halil.HumanResourcesPlatform.Authentication.security.AuthenticationPr
 import com.halil.HumanResourcesPlatform.Candidates.entites.Candidate;
 import com.halil.HumanResourcesPlatform.Candidates.repositories.CandidateRepository;
 import com.halil.HumanResourcesPlatform.Jobs.entities.Job;
-import com.halil.HumanResourcesPlatform.Jobs.entities.Status;
-import com.halil.HumanResourcesPlatform.Jobs.repositories.JobRepository;
 import com.halil.HumanResourcesPlatform.Jobs.services.JobService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,9 +33,7 @@ public class ApplicationController {
     private final CandidateRepository candidateRepository;
 
     private final ApplicationService applicationService;
-
-    private final JobRepository jobRepository;
-
+    private final JobService jobService;
     private final EmailService emailService;
 
     public ApplicationController(ApplicationRepository applicationRepository,
@@ -44,13 +41,14 @@ public class ApplicationController {
                                  EmailService emailService,
                                  CandidateRepository candidateRepository,
                                  ApplicationService applicationService,
-                                 JobRepository jobRepository) {
+                                 JobService jobService) {
         this.applicationRepository = applicationRepository;
         this.authenticationProvider = authenticationProvider;
         this.emailService = emailService;
         this.applicationService = applicationService;
         this.candidateRepository = candidateRepository;
-        this.jobRepository = jobRepository;
+        this.jobService = jobService;
+
     }
 
 
@@ -81,10 +79,10 @@ public class ApplicationController {
     @ApiResponse(responseCode = "403", description = "Cant apply to passive job"),
     @ApiResponse(responseCode = "403", description = "Already applied")})
     @PostMapping("/application")
-    public void apply(@PathVariable UUID jobId, @RequestHeader(name = "Authorization") String token){
+    public void apply(@Valid @RequestBody CreateApplicationDto createApplicationDto, @RequestHeader(name = "Authorization") String token) {
         UUID candidateId = authenticationProvider.getId(token);
         Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Candidate not found"));
-        Job job = jobRepository.findById(jobId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job not found"));
-        applicationService.createApplication(candidate,job);
+        Job job = jobService.getJob(createApplicationDto.job_id());
+        applicationService.createApplication(candidate, job);
     }
 }

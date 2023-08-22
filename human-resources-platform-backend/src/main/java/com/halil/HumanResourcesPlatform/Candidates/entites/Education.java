@@ -2,6 +2,8 @@ package com.halil.HumanResourcesPlatform.Candidates.entites;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.UUID;
 
@@ -10,6 +12,7 @@ public class Education {
     @Id
     @GeneratedValue
     @JsonIgnore
+    @JdbcTypeCode(SqlTypes.CHAR)
     UUID educationId;
 
     String date;
@@ -58,6 +61,5 @@ public class Education {
 
     public void setCandidate(Candidate candidate) {
         this.candidate = candidate;
-        candidate.pushEducation(this);
     }
 }

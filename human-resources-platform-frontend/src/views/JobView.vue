@@ -11,6 +11,7 @@ import type { Applicant } from '@/types/Applicant';
 import type { Application } from '@/types/Application';
 import CheckIcon from '@/components/CheckIcon.vue';
 import type { ChangeStatus } from '@/types/ChangeStatus';
+import ChangeJobStatusInput from '@/components/ChangeJobStatusInput.vue';
 
 const profileStore = useProfileStore();
 const route = useRoute();
@@ -19,6 +20,7 @@ const status = ref('ACTIVE');
 const date = ref<Date>(new Date());
 const applicants = ref<Applicant[]>([]);
 const applications = ref<Application[]>([]);
+const isPermanent = ref<boolean>(false);
 const isApplied = computed<boolean>(() => {
     for (const application of applications.value) {
         if (application.jobId === route.params.job_id) {
@@ -30,19 +32,20 @@ const isApplied = computed<boolean>(() => {
 
 onMounted(async () => {
     try {
-        const response = await axios.get(`http://localhost:8080/job/${route.params.job_id}`);
+        const response = await axios.get(`${import.meta.env.VITE_URL}/job/${route.params.job_id}`);
         job.value = response.data;
     }
 
     catch (e: any) {
         if (e.code === 'NOT_FOUND' || e.code === 'ERR_BAD_REQUEST') {
             await router.push('/404');
+            return;
         }
         console.log(e)
     }
 
     if (profileStore.getRole === 'HR_SPECIALIST' && profileStore.getUserId === job.value?.poster.hrSpecialistId) {
-        const response = await axios.get(`http://localhost:8080/job/${route.params.job_id}/applicants`, {
+        const response = await axios.get(`${import.meta.env.VITE_URL}/job/${route.params.job_id}/applicants`, {
             headers: {
                 Authorization: `Bearer ${profileStore.getJwt}`
             }
@@ -51,7 +54,7 @@ onMounted(async () => {
     }
     if (profileStore.getRole === 'CANDIDATE') {
         try {
-            const response = await axios.get(`http://localhost:8080/candidate/${profileStore.getUserId}/applications`, {
+            const response = await axios.get(`${import.meta.env.VITE_URL}/candidate/${profileStore.getUserId}/applications`, {
                 headers: {
                     Authorization: `Bearer ${profileStore.getJwt}`
                 }
@@ -71,7 +74,9 @@ async function apply() {
         await router.push('/sign-in')
     }
     try {
-        const response = await axios.post(`http://localhost:8080/application`, null, {
+        const response = await axios.post(`${import.meta.env.VITE_URL}/application`, {
+            job_id: route.params.job_id
+        }, {
             headers: {
                 Authorization: `Bearer ${profileStore.getJwt}`
             }
@@ -94,11 +99,13 @@ async function apply() {
 
 
 
-async function setStatus() {
+async function changeStatus() {
     try {
-        const response = await axios.put(`http://localhost:8080/job/${route.params.job_id}/status`, {
-            until: new Date(date.value).getTime(),
-            status: status.value
+        //console.log(`${date.value.getDay()} ${date.value.getMonth()} ${date.value.getFullYear()} ${date.value.getHours()} ${date.value.getMinutes()}`);
+        const response = await axios.put(`${import.meta.env.VITE_URL}/job/${route.params.job_id}/status`, {
+            until: `${date.value.getDate()} ${date.value.getMonth() + 1} ${date.value.getFullYear()} ${date.value.getHours()} ${date.value.getMinutes()}`,
+            status: status.value,
+            is_permanent: isPermanent.value
         }, {
             headers: {
                 Authorization: `Bearer ${profileStore.getJwt}`
@@ -117,7 +124,7 @@ async function setStatus() {
 async function changeApplicantStatus(status: ChangeStatus) {
 
     try {
-        const response = await axios.put(`http://localhost:8080/application/${status.applicationId}/status`, {
+        const response = await axios.put(`${import.meta.env.VITE_URL}/application/${status.applicationId}/status`, {
             status: status.status
 
         }, {
@@ -177,42 +184,27 @@ async function changeApplicantStatus(status: ChangeStatus) {
                             <div class="row">
                                 <div class="col-sm-12 text-center">
                                     <button type="button" class="btn btn-success"
-                                        v-if="job?.status === 'ACTIVE' && profileStore.getRole != 'HR_SPECIALIST' && !(profileStore.getRole === 'CANDIDATE' && isApplied === true)"
+                                        v-if="job?.status === 'ACTIVE' && profileStore.getRole != 'HR_SPECIALIST' && !(profileStore.getRole === 'CANDIDATE' && isApplied === true) && profileStore.isBlackListed === false"
                                         @click="apply">Apply</button>
-
-
-                                    <div v-if="profileStore.getRole === 'CANDIDATE' && isApplied === true">
+                                    <p style="color: red;"
+                                        v-if="job?.status === 'PASSIVE' && profileStore.getRole === 'CANDIDATE'">This post
+                                        no longer accepting applications</p>
+                                    <p style="color: red;"
+                                        v-if="profileStore.getRole === 'CANDIDATE' && profileStore.isBlackListed">You are
+                                        black listed</p>
+                                    <div v-if="profileStore.getRole === 'CANDIDATE' && isApplied === true && profileStore.isBlackListed === false">
                                         <CheckIcon></CheckIcon> <span style="color: #3A833A;"><b>Applied</b></span>
                                     </div>
-
                                     <button type="button" class="btn btn-success" disabled
-                                        v-if="job?.status === 'PASSIVE' && profileStore.getRole != 'HR_SPECIALIST'">Apply</button>
-
+                                        v-if="job?.status === 'PASSIVE' && profileStore.getRole != 'HR_SPECIALIST' && (isApplied === false || profileStore.isBlackListed)">Apply</button>
                                 </div>
                                 <div class="mt-3"
                                     v-if="profileStore.getRole === 'HR_SPECIALIST' && profileStore.getUserId === job?.poster.hrSpecialistId">
                                     <p>Current Status : {{ job.status.toLowerCase() }}</p>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                            id="flexRadioDefault1" @click="status = 'PASSIVE'">
-                                        <label class="form-check-label" for="flexRadioDefault1">
-                                            Passive
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                            id="flexRadioDefault2" checked value="ACTIVE" @click="status = 'ACTIVE'">
-                                        <label class="form-check-label" for="flexRadioDefault2">
-                                            Active
-                                        </label>
-                                    </div>
-                                    <label for="endDate">Until</label>
-                                    <div class="mb-3"><input id="datePicker" class="form-control" type="datetime-local"
-                                            v-model="date"></div>
-                                    <div class="text-center"><button type="button" class="btn btn-dark m-3"
-                                            @click="setStatus" style="background-color: rgb(7, 24, 61)">Set Post
-                                            Status</button>
-                                    </div>
+                                    <ChangeJobStatusInput v-model:date="date" v-model:status="status"
+                                        v-model:is-permanent="isPermanent"></ChangeJobStatusInput>
+                                    <div class="text-center mt-3"><button type="button" class="btn btn-success"
+                                            @click="changeStatus">Change status</button></div>
                                 </div>
                             </div>
 
@@ -228,8 +220,7 @@ async function changeApplicantStatus(status: ChangeStatus) {
         </div>
 
 
-    </div>
-</template>
+</div></template>
 
 
 <style></style>

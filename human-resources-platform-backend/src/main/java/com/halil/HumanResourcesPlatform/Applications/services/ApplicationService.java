@@ -42,14 +42,21 @@ public class ApplicationService {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Already applied");
             }
         }
+
+        if(candidate.isBlackListed() == true){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Candidate is black listed");
+        }
         Application application = new Application();
         application.setCandidate(candidate);
         application.setJob(job);
         application.setStatus(ApplicationStatus.ON_EVALUATION);
         job.pushApplication(application);
+        application.setJob(job);
         candidate.pushApplication(application);
+        application.setCandidate(candidate);
         jobRepository.save(job);
         candidateRepository.save(candidate);
+        applicationRepository.save(application);
         logger.info("Candidate:" + candidate.getCandidateId() + "applied Job: " + job.getJobId());
     }
 
