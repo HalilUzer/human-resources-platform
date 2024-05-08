@@ -35,12 +35,8 @@ public class JobController {
     private final AuthenticationProvider authenticationProvider;
     private final JobRepository jobRepository;
     private final JobService jobService;
-
     private final HrSpecialistRepository hrSpecialistRepository;
-
     private final Logger logger = LoggerFactory.getLogger(JobController.class);
-
-
     JobController(
             JobRepository jobRepository,
             JobService jobService,

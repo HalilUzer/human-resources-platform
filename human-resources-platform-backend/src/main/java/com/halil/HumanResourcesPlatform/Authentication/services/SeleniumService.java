@@ -152,7 +152,7 @@ public class SeleniumService {
 
 
     private String getProfilePhotoUrl(){
-        WebElement img = chromeDriver.findElement(By.xpath("//section[@class='artdeco-card ember-view pv-top-card']/div[2]/div[1]/div[1]/div[1]/button/img"));
+        WebElement img = chromeDriver.findElement(By.xpath("//section[@class='artdeco-card cdpChxJUOkdkAupMDrugiDkFHsSfUNikY']/div[2]/div[1]/div[1]/div[1]/button/img"));
         String imgSrc = img.getAttribute("src");
         return imgSrc;
     }

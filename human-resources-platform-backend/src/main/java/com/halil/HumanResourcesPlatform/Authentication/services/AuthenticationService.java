@@ -13,17 +13,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationService {
+
     private final LdapHrSpecialistRepository ldapHrSpecialistRepository;
-
     private final SeleniumService seleniumService;
-
     private final LinkedinOauthService linkedinOauthService;
-
-
     private final CandidateRepository candidateRepository;
-
     private final AuthenticationProvider authenticationProvider;
-
     private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
     public AuthenticationService(LdapHrSpecialistRepository ldapHrSpecialistRepository,

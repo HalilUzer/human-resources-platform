@@ -23,7 +23,7 @@ const isPostable = computed(() => {
   const fromHour = new Date();
   fromHour.setHours(fromHour.getHours() + 1)
   if (validator.isEmpty(jobDescription.value) || validator.isEmpty(title.value) || !(fromHour.getTime() < date.value.getTime() || isPermanent)) {
-    return false; 
+    return false;
   }
   else {
     return true;
@@ -85,10 +85,6 @@ onMounted(async () => {
     await router.push('/unauthorized');
   }
 })
-
-
-
-
 </script>
 
 

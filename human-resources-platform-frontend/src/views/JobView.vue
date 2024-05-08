@@ -192,7 +192,8 @@ async function changeApplicantStatus(status: ChangeStatus) {
                                     <p style="color: red;"
                                         v-if="profileStore.getRole === 'CANDIDATE' && profileStore.isBlackListed">You are
                                         black listed</p>
-                                    <div v-if="profileStore.getRole === 'CANDIDATE' && isApplied === true && profileStore.isBlackListed === false">
+                                    <div
+                                        v-if="profileStore.getRole === 'CANDIDATE' && isApplied === true && profileStore.isBlackListed === false">
                                         <CheckIcon></CheckIcon> <span style="color: #3A833A;"><b>Applied</b></span>
                                     </div>
                                     <button type="button" class="btn btn-success" disabled
@@ -220,7 +221,8 @@ async function changeApplicantStatus(status: ChangeStatus) {
         </div>
 
 
-</div></template>
+    </div>
+</template>
 
 
 <style></style>
